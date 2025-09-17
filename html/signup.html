@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign Up</title>
+  <link rel="stylesheet" href="../css/signup.css">
+</head>
+<body>
+  <div class="overlay">
+    <div class="signup-container">
+       <a href="index.html" class="close-btn">&times;</a>
+      <h2>Create Account</h2>
+      <form action="../php/signup.php" method="POST">
+        <input type="text" name="name" placeholder="Full Name" required>
+        
+        
+        <input type="email" name="email" placeholder="Email" required>
+        <input type="password" name="password" placeholder="Password" required>
+        <input type="password" placeholder="Confirm Password" required>
+
+        <label class="checkbox">
+          <input type="checkbox" required>
+          I agree to the <a href="terms.html">Terms & Conditions</a>
+        </label>
+
+        <button type="submit">Sign Up</button>
+      </form>
+      <p class="login-link">Already have an account? <a href="login.html">Log in</a></p>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Login - Pastel Dreams</title>
+  <link rel="stylesheet" href="../css/login.css" />
+</head>
+<body>
+  <div class="page-bg">
+    <div class="overlay">
+      <main class="auth-card">
+        <header class="auth-header">
+          <h1 id="login-title">Welcome back</h1>
+          <p class="sub">Sign in to continue to <strong>Logo</strong></p>
+        </header>
+
+        <form class="auth-form" action="#" method="POST" novalidate>
+          <label class="field">
+            <span class="label-text">Email or Phone</span>
+            <input type="text" name="user" placeholder="" required>
+          </label>
+
+          <label class="field">
+            <span class="label-text">Password</span>
+            <div class="password-row">
+              <input type="password" name="password" placeholder="" required id="password">
+              
+            </div>
+            <small class="pw-hint">Use at least 8 characters.</small>
+          </label>
+
+          <div class="row-between">
+            <label class="checkbox">
+              <input type="checkbox" name="remember">
+              <span>Remember me</span>
+            </label>
+            <a class="forgot" href="#">Forgot password?</a>
+          </div>
+
+          <button class="primary-btn" type="submit">Log in</button>
+        </form>
+
+        <footer class="auth-footer">
+          <p>Don't have an account? <a href="signup.html">Sign up</a></p>
+        </footer>
+      </main>
+    </div>
+  </div>
+
+</body>
+</html>
