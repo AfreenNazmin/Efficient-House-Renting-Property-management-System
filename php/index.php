@@ -9,6 +9,23 @@
 
 </head>
 <body>
+       <!-- Inside .menu-container -->
+<div class="menu-container">
+  <div class="hamburger-menu">☰</div>
+  <div class="signup-button">
+    <a href="../html/signup.html"><button>Sign Up</button></a>
+  </div>
+
+  <!-- Hidden navigation menu for hamburger -->
+  <nav class="mobile-menu">
+    <a href="index.php">Home</a>
+    <a href="../html/about.html">About</a>
+    <a href="../html/services.html">Services</a>
+    <a href="../html/properties.html">Properties</a>
+    <a href="../html/contact.html">Contact</a>
+    <a href="../html/login.html">Login</a>
+  </nav>
+</div>
   <!--Hero section-->
   <div class="hero">
     <div class="overlay"></div>
@@ -25,12 +42,8 @@
         <button class="btn-outline">BROWSE PROPERTIES</button>
         <button class="btn-outline">LEARN MORE</button>
       </div>
-        <div class="menu-container">
-    <div class="hamburger-menu">☰</div>
-    <div class="signup-button">
-      <a href="signup.html"><button>Sign Up</button></a>
-    </div>
-  </div>
+
+
 
   
     </div>
@@ -38,12 +51,12 @@
   <!-- New section-->
 <div class="new-section">
   <section class="bar">
-    <a href="index.html">Home</a>
-    <a href="about.html">About</a>
-    <a href="services.html">Services</a>
-    <a href="properties.html">Properties</a>
-    <a href="contact.html">Contact</a>
-    <a href="login.html">Login</a>
+    <a href="index.php">Home</a>
+    <a href="../html/about.html">About</a>
+    <a href="../html/services.html">Services</a>
+    <a href="../html/properties.html">Properties</a>
+    <a href="../html/contact.html">Contact</a>
+    <a href="../html/login.html">Login</a>
     <input type="text" placeholder="Search...">
 <span>🔍</span>
 
@@ -103,11 +116,11 @@
       <div class="footer-section links">
         <h3>Quick Links</h3>
         <ul>
-          <li><a href="index.html">Home</a></li>
-          <li><a href="about.html">About Us</a></li>
-          <li><a href="contact.html">Contact Us</a></li>
-          <li><a href="terms.html">Terms & Privacy Policy</a></li>
-          <li><a href="faq.html">FAQ</a></li>
+          <li><a href="index.php">Home</a></li>
+          <li><a href="../html/about.html">About Us</a></li>
+          <li><a href="../html/contact.html">Contact Us</a></li>
+          <li><a href="../html/terms.html">Terms & Privacy Policy</a></li>
+          <li><a href="../html/faq.html">FAQ</a></li>
         </ul>
       </div>
 
@@ -162,6 +175,14 @@
     </div>
   </footer>
 
+<script>
+  const hamburger = document.querySelector(".hamburger-menu");
+  const mobileMenu = document.querySelector(".mobile-menu");
+
+  hamburger.addEventListener("click", () => {
+    mobileMenu.classList.toggle("active");
+  });
+</script>
 
 
 

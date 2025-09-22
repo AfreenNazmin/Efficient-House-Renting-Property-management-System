@@ -5,29 +5,80 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Sign Up</title>
   <link rel="stylesheet" href="../css/signup.css">
+
+
 </head>
 <body>
+  <div class="bg">
   <div class="overlay">
-    <div class="signup-container">
-       <a href="index.html" class="close-btn">&times;</a>
-      <h2>Create Account</h2>
-      <form action="../php/signup.php" method="POST">
-        <input type="text" name="name" placeholder="Full Name" required>
-        
-        
-        <input type="email" name="email" placeholder="Email" required>
-        <input type="password" name="password" placeholder="Password" required>
-        <input type="password" placeholder="Confirm Password" required>
+    <div class="signup-wrapper">
+      <div class="role-menu">
+        <button type="button" onclick="setRole('tenant')" id="tenantBtn" class="active">Tenant</button>
+        <button type="button" onclick="setRole('landlord')" id="landlordBtn">Landlord</button>
+      </div>
 
-        <label class="checkbox">
-          <input type="checkbox" required>
-          I agree to the <a href="terms.html">Terms & Conditions</a>
-        </label>
+      <div class="signup-container">
+        <a href="index.html" class="close-btn">&times;</a>
+        <h2>Create Account</h2>
+        <form action="../php/signup.php" method="POST" id="signupForm">
+          <input type="text" name="name" placeholder="Full Name" required>
+          <input type="email" name="email" placeholder="Email" required>
 
-        <button type="submit">Sign Up</button>
-      </form>
-      <p class="login-link">Already have an account? <a href="login.html">Log in</a></p>
+          <div class="password-field">
+  <input type="password" name="password" id="password" placeholder="Password" required>
+  <span class="toggle-password" onclick="togglePassword('password')">&#128065;</span>
+</div>
+
+<div class="password-field">
+  <input type="password" id="confirmPassword" placeholder="Confirm Password" required>
+  <span class="toggle-password" onclick="togglePassword('confirmPassword')">&#128065;</span>
+</div>
+
+
+          <input type="hidden" name="role" id="roleInput" value="tenant">
+
+          <label class="checkbox">
+            <input type="checkbox" required>
+            I agree to the <a href="terms.html">Terms & Conditions</a>
+          </label>
+
+          <button type="submit">Sign Up</button>
+        </form>
+
+        <p class="login-link">Already have an account? <a href="login.html">Log in</a></p>
+      </div>
     </div>
   </div>
+</div>
+<script>
+  // Role selection
+  function setRole(role) {
+    document.getElementById("roleInput").value = role;
+    document.getElementById("tenantBtn").classList.remove("active");
+    document.getElementById("landlordBtn").classList.remove("active");
+    document.getElementById(role + "Btn").classList.add("active");
+  }
+
+  // Show/hide password
+  function togglePassword(fieldId) {
+    const input = document.getElementById(fieldId);
+    if (input.type === "password") {
+      input.type = "text";
+    } else {
+      input.type = "password";
+    }
+  }
+
+  // Confirm password match
+  document.getElementById('signupForm').addEventListener('submit', function(e) {
+    const password = document.getElementById('password').value;
+    const confirmPassword = document.getElementById('confirmPassword').value;
+
+    if (password !== confirmPassword) {
+      e.preventDefault();
+      alert("Passwords do not match!");
+    }
+  });
+</script>
 </body>
 </html>
