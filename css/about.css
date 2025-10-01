@@ -128,18 +128,18 @@ body {
 
 /* Mission & Vision */
 .mission, .vision {
-    background: #333;
+    background: #000000;
     text-align: center;
     padding: 60px 20px;
 }
 
 .mission h2, .vision h2 {
     margin-bottom: 20px;
-    color: #ffffff; 
+    color: #fdeeee; 
 }
 
 .mission p, .vision p {
-    color: #dcc0c0; 
+    color: #613f3f; 
 }
 
 /* Values */
