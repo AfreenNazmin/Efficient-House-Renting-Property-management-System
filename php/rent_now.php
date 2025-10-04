@@ -51,7 +51,7 @@ $ok = $ins->execute();
 $ins->close();
 
 if($ok){
-    // mark property unavailable (optional)
+    
     $upd = $conn->prepare("UPDATE properties SET available = 0 WHERE id = ?");
     $upd->bind_param("i", $property_id);
     $upd->execute();

@@ -8,12 +8,13 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-  <!-- Menu -->
+  <!-- Menu container signup and ham-->
   <div class="menu-container">
     <div class="hamburger-menu">☰</div>
     <div class="signup-button">
       <a href="../html/signup.html"><button>Sign Up</button></a>
     </div>
+
     <nav class="mobile-menu">
       <a href="index.php">Home</a>
       <a href="../html/about.html">About</a>
@@ -24,26 +25,26 @@
     </nav>
   </div>
 
-  <!-- Hero Section -->
+  <!-- Hero Section first view -->
   <div class="hero">
     <div class="overlay"></div>
     <div class="hero-content">
       <h1>FIND YOUR<br>PERFECT HOME</h1>
       <p>Search by city, neighborhood, or address</p>
 
-      <!-- Search Box with Autocomplete -->
+      <!-- Search Box -->
       <div class="search-box">
         <form action="search.php" method="GET" autocomplete="off">
           <input type="text" name="query" placeholder="Search by city, neighborhood, or address" id="search-input" required />
           <button type="submit">Search</button>
-          <div id="suggestions"></div> <!-- Dropdown container -->
+          <div id="suggestions"></div> 
         </form>
       </div>
 
-      <!-- Hero Buttons -->
+      <!-- Hero section Buttons -->
       <div class="buttons">
-        <button class="btn-outline" onclick="location.href='properties.html'">BROWSE PROPERTIES</button>
-        <button class="btn-outline" onclick="document.querySelector('.services').scrollIntoView({behavior:'smooth'})">LEARN MORE</button>
+       <a href="../html/properties.html" class="btn-outline">BROWSE PROPERTIES</a>
+        <a href="../html/services.html" class="btn-outline">LEARN MORE</a>
       </div>
     </div>
   </div>
@@ -53,7 +54,7 @@
     <section class="bar">
       <a href="index.php">Home</a>
       <a href="../html/about.html">About</a>
-      <a href="../html/services.html">Services</a>
+      <a href="../html/services.html">Favourite</a>
       <a href="../html/properties.html">Properties</a>
       <a href="../html/contact.html">Contact</a>
       <a href="../html/login.html">Login</a>
@@ -65,21 +66,28 @@
   <h2>Popular Properties</h2>
   <div class="properties-grid">
     <?php
-      // Include database connection
+      
       include 'config.php';
 
-      // Fetch 3 popular properties (latest added)
       $query = "SELECT * FROM properties ORDER BY id DESC LIMIT 3";
       $result = mysqli_query($conn, $query);
 
       if(mysqli_num_rows($result) > 0){
         while($row = mysqli_fetch_assoc($result)){
     ?>
-          <div class="property-card">
-            <img src="../uploads/<?php echo $row['image_file']; ?>" alt="<?php echo $row['property_name']; ?>">
-            <h3><?php echo $row['property_name']; ?></h3>
-            <p>$<?php echo $row['rent']; ?>/month - <?php echo $row['location']; ?></p>
-          </div>
+         <div class="listing-card">
+  <img src="../uploads/<?php echo !empty($row['image']) ? htmlspecialchars($row['image']) : 'default.jpg'; ?>" 
+     alt="<?php echo !empty($row['property_name']) ? htmlspecialchars($row['property_name']) : 'Property'; ?>">
+
+
+  <h3><?php echo isset($row['property_name']) ? htmlspecialchars($row['property_name']) : 'Unnamed'; ?></h3>
+  <p>
+    $<?php echo isset($row['rent']) ? $row['rent'] : '0'; ?>/month - 
+    <?php echo isset($row['location']) ? htmlspecialchars($row['location']) : 'Unknown'; ?>
+  </p>
+</div>
+
+
     <?php
         }
       } else {
@@ -95,30 +103,12 @@
 
     <section class="featured-properties">
       <h2>Featured Properties</h2>
-      <div class="properties-grid">
-        <div class="property-card">
-          <img src="images/property1.jpg" alt="Property 1">
-          <h3>Modern Apartment</h3>
-          <p>$1200/month - New York</p>
-        </div>
-        <div class="property-card">
-          <img src="images/property2.jpg" alt="Property 2">
-          <h3>Luxury Villa</h3>
-          <p>$2500/month - Los Angeles</p>
-        </div>
-        <div class="property-card">
-          <img src="images/property3.jpg" alt="Property 3">
-          <h3>Cozy Studio</h3>
-          <p>$800/month - Chicago</p>
-        </div>
-      </div>
     </section>
   </div>
 
-  <!-- Footer (unchanged) -->
+  <!-- Footer section-->
   <footer class="footer">
         <div class="container">
-      <!-- Brand / About -->
       <div class="footer-section about">
         <h2 class="logo">Title+logo</h2>
         <p class="tagline">Finding your perfect home made simple</p>
@@ -171,7 +161,7 @@
         </div>
       </div>
 
-      <!-- Newsletter / Signup -->
+      <!-- Newsletter -->
       <div class="footer-section newsletter">
         <h3>Subscribe</h3>
         <form>
@@ -181,15 +171,15 @@
       </div>
     </div>
 
-    <!-- Legal Info -->
-    <div class="legal">
+    <!-- right Info -->
+    <div class="cr">
       <p>© 2025 Page name. All Rights Reserved.</p>
       <p><a href="../html/terms.html">Terms of Service</a> | <a href="#">Privacy Policy</a></p>
     </div>
   </footer>
   
 
-  <!-- Scripts -->
+  <!--js-->
   <script>
     // Hamburger menu toggle
     const hamburger = document.querySelector(".hamburger-menu");

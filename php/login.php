@@ -7,7 +7,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $password = trim($_POST['password']);
     $role = trim($_POST['role']);
 
-    // Prepared statement to avoid SQL injection
+    // Prepared statement
     $stmt = $conn->prepare("SELECT id, name, email, password, role FROM users WHERE email = ? AND role = ?");
     $stmt->bind_param("ss", $email, $role);
     $stmt->execute();
@@ -20,7 +20,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         if (password_verify($password, $user['password'])) {
             // Store user info in session
             $_SESSION['user_id'] = $user['id'];
-         $_SESSION['username'] = $user['name']; // Add this line
+         $_SESSION['username'] = $user['name']; 
 
             $_SESSION['email'] = $user['email'];
             $_SESSION['role'] = $user['role'];

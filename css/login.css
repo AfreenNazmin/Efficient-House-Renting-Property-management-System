@@ -1,4 +1,4 @@
-/* Reset & basics */
+
 body {
   margin: 0;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -6,7 +6,7 @@ body {
   height: 100vh;
 }
 
-/* Overlay to darken background */
+
 .overlay {
   width: 100%;
   height: 100%;
@@ -99,7 +99,7 @@ body {
   color: #bbb;
 }
 
-/* Password toggle */
+
 .password-field {
   position: relative;
 }
@@ -114,7 +114,7 @@ body {
   color: #555;
 }
 
-/* Checkbox + forgot row */
+
 .row-between {
   display: flex;
   justify-content: space-between;
@@ -176,7 +176,7 @@ body {
   text-decoration: underline;
 }
 
-/* Responsive */
+
 @media(max-width: 480px){
   .login-card {
     width: 100%;

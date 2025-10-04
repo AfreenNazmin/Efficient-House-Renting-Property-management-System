@@ -7,7 +7,7 @@ if(!isset($_SESSION['username'])){
 
 include 'config.php';
 
-// Fetch landlord's properties
+// get landlord's properties
 $landlord = $_SESSION['username'];
 $sql = "SELECT * FROM properties WHERE landlord = ?";
 $stmt = $conn->prepare($sql);
@@ -15,7 +15,7 @@ $stmt->bind_param("s", $landlord);
 $stmt->execute();
 $result = $stmt->get_result();
 
-// Fetch landlord's rentals
+// get landlord's rentals
 $sql_rentals = "SELECT r.id AS rental_id, p.property_name, p.location, p.rent, u.name AS tenant_name, r.start_date, r.end_date, r.status
                 FROM rentals r
                 JOIN properties p ON r.property_id = p.id
@@ -26,7 +26,7 @@ $stmt2->bind_param("s", $landlord);
 $stmt2->execute();
 $rentals = $stmt2->get_result();
 
-// Fetch landlord's reviews
+// get landlord's reviews
 $sql_reviews = "SELECT r.id AS review_id, r.rating, r.comment, r.created_at, p.property_name, u.name AS tenant_name
                 FROM reviews r
                 JOIN properties p ON r.property_id = p.id
@@ -160,9 +160,9 @@ $reviews = $stmt3->get_result();
 
 <section id="messages" class="cards-section">
   <h2>Messages</h2>
-  <div id="conversationList"></div> <!-- Inbox list -->
+  <div id="conversationList"></div>
   <div id="conversationView" style="display:none;">
-    <div id="messagesContainer"></div> <!-- Messages -->
+    <div id="messagesContainer"></div>
     <form id="replyForm">
       <input type="hidden" name="conversation_id" id="convId">
       <textarea name="body" placeholder="Type your reply..."></textarea>

@@ -7,7 +7,7 @@ if(!isset($_SESSION['user_id']) && !isset($_SESSION['username'])){
 
 include 'config.php';
 
-// determine tenant_id (support both user_id session or username fallback)
+
 if(isset($_SESSION['user_id'])){
     $tenant_id = (int)$_SESSION['user_id'];
 } else {
@@ -27,12 +27,12 @@ $stmt_user->bind_param("i", $tenant_id);
 $stmt_user->execute();
 $user = $stmt_user->get_result()->fetch_assoc();
 
-// Build properties search query (filters via GET)
-$where = ["available = 1"]; // only available properties
+
+$where = ["available = 1"]; 
 $types = "";
 $params = [];
 
-// sanitize GET inputs (basic)
+
 $location = isset($_GET['location']) ? trim($_GET['location']) : '';
 $min_rent = isset($_GET['min_rent']) ? (int)$_GET['min_rent'] : 0;
 $max_rent = isset($_GET['max_rent']) ? (int)$_GET['max_rent'] : 0;
@@ -69,7 +69,7 @@ $sql_props = "SELECT id, property_name, location, rent, image, bedrooms, propert
 $stmt_props = $conn->prepare($sql_props);
 
 if($types !== ""){
-    // bind dynamically
+   
     $bind_names[] = $types;
     for ($i=0; $i<count($params); $i++) {
         $bind_names[] = &$params[$i];
@@ -86,10 +86,10 @@ $properties = $stmt_props->get_result();
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Tenant Dashboard</title>
-  <!-- reuse landlord.css to match style -->
+  
   <link rel="stylesheet" href="../css/landlord.css">
   <style>
-    /* small overrides for tenant-specific items */
+
     .search-bar { display:flex; gap:8px; margin-bottom:18px; align-items:center; flex-wrap:wrap; }
     .search-bar input, .search-bar select { padding:8px 10px; border-radius:6px; border:1px solid #ccc; }
     .rent-btn { background:#2d9cdb; color:#fff; border:none; padding:8px 12px; border-radius:6px; cursor:pointer; }
@@ -130,7 +130,7 @@ $properties = $stmt_props->get_result();
       <div class="msg-error"><?php echo htmlspecialchars($_GET['err']); ?></div>
     <?php endif; ?>
 
-    <!-- Search / Filters -->
+    
     <section id="explore" class="cards-section">
       <h2>Search Properties</h2>
       <form method="GET" class="search-bar" id="searchForm">
@@ -181,7 +181,7 @@ $properties = $stmt_props->get_result();
       </div>
     </section>
 
-    <!-- My Rentals (simple listing) -->
+    
     <section id="my-rentals" class="cards-section">
       <h2>My Rentals</h2>
       <div class="cards">
@@ -208,7 +208,7 @@ $properties = $stmt_props->get_result();
       </div>
     </section>
 
-    <!-- (optional) messages / reviews / profile sections like earlier -->
+   
   </main>
 </div>
 

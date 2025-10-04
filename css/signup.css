@@ -1,4 +1,4 @@
-/* Reset & basics */
+
 body {
   margin: 0;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -13,10 +13,9 @@ body {
   height: 100%;
   display: flex;
   justify-content: center;
-  align-items: center; /* center everything vertically */
+  align-items: center; 
 }
 
-/* Wrapper for role-menu + form */
 .signup-wrapper {
   display: flex;
   flex-direction: column;
@@ -64,7 +63,7 @@ body {
 .signup-container {
   position: relative;
   background: #1f1f1f;
-  padding: 40px 30px; /* slightly smaller padding for better alignment */
+  padding: 40px 30px;
   border-radius: 12px;
   box-shadow: 0 8px 30px rgba(0,0,0,0.7);
   width: 400px;
@@ -93,7 +92,7 @@ body {
 .close-btn:hover {
   color: #ff7f50;
 }
-    /* Password toggle styling */
+   
     .password-field {
   position: relative;
   margin-bottom: 15px;
@@ -101,7 +100,7 @@ body {
 
 .password-field input {
   width: 100%;
-  padding: 12px 40px 12px 12px; /* leave space for eye icon */
+  padding: 12px 40px 12px 12px; 
   border-radius: 4px;
   border: 1px solid #ccc;
   font-size: 16px;

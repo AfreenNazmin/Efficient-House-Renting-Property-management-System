@@ -51,13 +51,13 @@ body {
 /* Search */
 .search-box {
   width: 100%;
-  max-width: 600px; /* optional */
+  max-width: 600px;
   margin-bottom: 30px;
 }
 
 .search-box form {
   display: flex;
-  width: 100%; /* ensure form uses all of .search-box */
+  width: 100%;
 }
 
 .search-box form input {
@@ -94,7 +94,9 @@ body {
   color: white;
   font-weight: bold;
   cursor: pointer;
-  transition: background 0.3s;
+  transition: background 0.3s, color 0.3s;
+  text-decoration: none;
+  display: inline-block; 
 }
 
 .btn-outline:hover {
@@ -118,10 +120,10 @@ body {
   font-size: 28px;
   cursor: pointer;
   color: white;
-  display: block; /* by default hidden, only mobile e show hobe */
+  display: block; 
 }
 
-/* Hide mobile menu properly */
+/* Hide hm menu */
 .mobile-menu {
   display: none;
   flex-direction: column;
@@ -134,7 +136,6 @@ body {
   z-index: 1100;
 }
 
-/* Active state */
 .mobile-menu.active {
   display: flex;
 }
@@ -250,14 +251,14 @@ body {
   margin-top: 30px;
 }
 
-.card, .property-card {
+.card, .listing-card {
   background: white;
   padding: 20px;
   border-radius: 12px;
   width: 250px;
   box-shadow: 0 4px 6px rgba(0,0,0,0.1);
 }
-.property-card img {
+.listing-card img {
   width: 100%;
   border-radius: 12px;
   margin-bottom: 10px;
@@ -338,19 +339,19 @@ body {
 .newsletter button:hover {
   background-color: #e6b800;
 }
-.legal {
+.cr {
   text-align: center;
   padding-top: 20px;
   border-top: 1px solid #444;
   margin-top: 20px;
 }
-.legal a {
+.cr a {
   text-decoration: none;
   color: #ffcc00;
   margin: 0 5px;
 }
 
-/* Responsive */
+
 @media (max-width: 900px) {
   .footer .container {
     flex-direction: column;
@@ -358,11 +359,11 @@ body {
   }
 }
 @media (max-width: 768px) {
-  /* Hide desktop bar */
+
   .bar {
     display: none;
   }
-  /* Show hamburger */
+
   .hamburger-menu {
     display: block;
   }

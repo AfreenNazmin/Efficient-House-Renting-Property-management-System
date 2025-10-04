@@ -1,5 +1,5 @@
 <?php
-include 'config.php'; // your database connection
+include 'config.php'; 
 
 if (isset($_GET['query'])) {
     $search = $_GET['query'];

@@ -1,7 +1,7 @@
 /* Dashboard layout */
 .dashboard-container {
   display: flex;
-  min-height: calc(100vh - 70px); /* adjust for header height */
+  min-height: calc(100vh - 70px); 
 }
 
 .sidebar {
@@ -24,7 +24,7 @@
 }
 
 .sidebar ul li a:hover, .sidebar ul li a.active {
-  color: #ff7f50; /* matching theme highlight */
+  color: #ff7f50; 
 }
 
 
@@ -69,7 +69,7 @@
 .dashboard-content {
   flex: 1;
   padding: 30px;
-  background-color: #f5f5f5; /* same as index background */
+  background-color: #f5f5f5; 
 }
 
 .cards-section {
@@ -150,8 +150,8 @@ form button:hover {
     }
     .cards .card img {
     width: 100%;
-    height: 200px; /* fixed height */
-    object-fit: cover; /* crop and fit nicely */
+    height: 200px; 
+    object-fit: cover; 
     border-radius: 8px;
 }
 
