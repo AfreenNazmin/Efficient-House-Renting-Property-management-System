@@ -131,6 +131,21 @@ $reviews = $stmt3->get_result();
       <input type="text" name="property_name" placeholder="Property Name" required>
       <input type="text" name="location" placeholder="Location" required>
       <input type="number" name="rent" placeholder="Rent Amount" required>
+ <select name="property_type" required>
+        <option value="" disabled selected>Select Property Type</option>
+        <option value="apartment">Apartment</option>
+        <option value="independent_house">Villa</option>
+        <option value="studio">Studio Apartment</option>
+        <option value="duplex">Duplex</option>
+        <option value="shared_room">Shared Room</option>
+        <option value="pg">Paying Guest (PG)</option>
+        <option value="office_space">Office Space</option>
+        <option value="shop">Shop / Retail Space</option>
+        <option value="warehouse">Warehouse</option>
+        <option value="farmhouse">Farmhouse</option>
+        <option value="land">Land / Plot</option>
+      </select>
+      <input type="number" name="bedroom" placeholder="Number of Bedrooms" required>
       <input type="file" name="property_image" accept="image/*" required>
       <button type="submit">Add Property</button>
     </form>
@@ -238,10 +253,10 @@ async function updateUnreadCount() {
         console.error('Error fetching unread messages:', err);
     }
 }
-updateUnreadCount(); // initial call
+updateUnreadCount(); 
 setInterval(updateUnreadCount, 7000);
 
-// --- Reply Form (optional enhancement) ---
+
 const replyForm = document.getElementById('replyForm');
 if(replyForm){
     replyForm.addEventListener('submit', async (e) => {
