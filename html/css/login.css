@@ -6,27 +6,29 @@ body {
   height: 100vh;
 }
 
-/* Overlay */
-.bg .overlay {
-  background: rgba(0, 0, 0, 0.6);
+
+.overlay {
   width: 100%;
   height: 100%;
+  background: rgba(0,0,0,0.6);
   display: flex;
   justify-content: center;
-  align-items: center; 
+  align-items: center;
+  padding: 20px;
 }
 
-.signup-wrapper {
+/* Wrapper */
+.login-wrapper {
   display: flex;
   flex-direction: column;
-  align-items: left;
+  align-items: center;
 }
 
-/* Role Menu */
+/* Role menu */
 .role-menu {
   display: flex;
   justify-content: center;
- 
+  margin-bottom: 20px;
   border-radius: 8px;
   overflow: hidden;
   box-shadow: 0 4px 15px rgba(0,0,0,0.4);
@@ -34,14 +36,13 @@ body {
 
 .role-menu button {
   flex: 1;
-  padding: 14px 20px;
+  padding: 12px 20px;
   border: none;
   cursor: pointer;
   background: #555;
   color: #ccc;
   font-weight: 600;
-  font-size: 16px;
-  transition: all 0.3s ease;
+  transition: all 0.3s;
 }
 
 .role-menu button.active {
@@ -59,9 +60,8 @@ body {
   border-bottom-right-radius: 8px;
 }
 
-/* Signup Container */
-.signup-container {
-  position: relative;
+/* Login Card */
+.login-card {
   background: #1f1f1f;
   padding: 40px 30px;
   border-radius: 12px;
@@ -71,39 +71,37 @@ body {
   color: #fff;
 }
 
-.signup-container h2 {
-  margin-bottom: 20px;
+.login-card h2 {
+  margin-bottom: 10px;
   font-size: 28px;
 }
 
-/* Close Button */
-.close-btn {
-  position: absolute;
-  top: 15px;
-  right: 20px;
-  font-size: 28px;
-  font-weight: bold;
-  color: #fff;
-  cursor: pointer;
-  transition: color 0.3s;
-  text-decoration: none;
+.login-card .sub-text {
+  font-size: 14px;
+  margin-bottom: 25px;
+  color: #bbb;
 }
 
-.close-btn:hover {
-  color: #ff7f50;
-}
-   
-    .password-field {
-  position: relative;
-  margin-bottom: 15px;
-}
-
-.password-field input {
+/* Inputs */
+.login-card input[type="text"],
+.login-card input[type="password"] {
   width: 100%;
-  padding: 12px 40px 12px 12px; 
-  border-radius: 4px;
-  border: 1px solid #ccc;
-  font-size: 16px;
+  padding: 12px 14px;
+  margin-bottom: 15px;
+  border: none;
+  border-radius: 8px;
+  background: #2a2a2a;
+  color: #fff;
+  font-size: 15px;
+}
+
+.login-card input::placeholder {
+  color: #bbb;
+}
+
+
+.password-field {
+  position: relative;
 }
 
 .toggle-password {
@@ -114,79 +112,74 @@ body {
   cursor: pointer;
   font-size: 18px;
   color: #555;
-  user-select: none;
 }
 
-    
-/* Input fields */
-.signup-container input[type="text"],
-.signup-container input[type="email"],
-.signup-container input[type="password"] {
-  width: 100%;
-  padding: 12px 14px;
-  margin: 10px 0;
-  border: none;
-  border-radius: 8px;
-  background: #2a2a2a;
-  color: #fff;
-  font-size: 15px;
+
+.row-between {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
 }
 
-.signup-container input::placeholder {
-  color: #bbb;
-}
-
-/* Checkbox */
 .checkbox {
   display: flex;
   align-items: center;
   font-size: 14px;
   color: #ccc;
-  margin: 10px 0;
 }
 
-.checkbox a {
+.checkbox span {
   margin-left: 5px;
+}
+
+.forgot {
   color: #ff7f50;
   text-decoration: none;
 }
 
-.checkbox a:hover {
+.forgot:hover {
   text-decoration: underline;
 }
 
 /* Button */
-.signup-container button {
+.primary-btn {
   background: #ff7f50;
   color: #fff;
   border: none;
   padding: 12px;
   width: 100%;
   border-radius: 8px;
-  margin-top: 15px;
   font-weight: bold;
   font-size: 16px;
   cursor: pointer;
   transition: all 0.3s;
 }
 
-.signup-container button:hover {
+.primary-btn:hover {
   background: #e36f6f;
 }
 
-/* Login link */
-.login-link {
+/* Signup link */
+.signup-link {
   margin-top: 15px;
   font-size: 14px;
   color: #ccc;
 }
 
-.login-link a {
+.signup-link a {
   color: #ff7f50;
   text-decoration: none;
 }
 
-.login-link a:hover {
+.signup-link a:hover {
   text-decoration: underline;
 }
 
+
+@media(max-width: 480px){
+  .login-card {
+    width: 100%;
+    padding: 30px 20px;
+  }
+}

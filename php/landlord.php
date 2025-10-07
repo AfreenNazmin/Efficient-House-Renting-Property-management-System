@@ -93,22 +93,20 @@ $reviews = $stmt3->get_result();
       </div>
     </section>
 
-    <!-- Add Property Modal -->
-    <div id="propertyModal" class="modal">
-      <div class="modal-content">
-        <span class="close">&times;</span>
-        <h2>Add New Property</h2>
-        <form action="../php/add_property.php" method="POST" enctype="multipart/form-data">
-          <input type="text" name="property_name" placeholder="Property Name" required>
-          <input type="text" name="location" placeholder="Location" required>
-          <input type="number" name="rent" placeholder="Rent Amount" required>
-          <input type="text" name="property_type" placeholder="Property Type">
-          <input type="number" name="bedrooms" placeholder="Bedrooms">
-          <input type="file" name="property_image" accept="image/*">
-          <button type="submit">Add Property</button>
-        </form>
-      </div>
-    </div>
+<!-- Add Property Modal -->
+<div id="propertyModal" class="modal">
+  <div class="modal-content">
+    <span class="close">&times;</span>
+    <h2>Add New Property</h2>
+    <form action="../php/add_property.php" method="POST" enctype="multipart/form-data">
+      <input type="text" name="property_name" placeholder="Property Name" required>
+      <input type="text" name="location" placeholder="Location" required>
+      <input type="number" name="rent" placeholder="Rent Amount" required>
+      <input type="file" name="property_image" accept="image/*" required>
+      <button type="submit">Add Property</button>
+    </form>
+  </div>
+</div>
 
     <!-- Rentals Section -->
     <section id="rentals" class="cards-section">
@@ -174,9 +172,65 @@ const propertyModal = document.getElementById('propertyModal');
 const openModalBtn = document.getElementById('openModal');
 const closeModalBtn = propertyModal.querySelector('.close');
 
-openModalBtn.onclick = () => propertyModal.style.display = 'block';
-closeModalBtn.onclick = () => propertyModal.style.display = 'none';
-window.onclick = (e) => { if(e.target == propertyModal) propertyModal.style.display = 'none'; }
+// Open Add Property Modal
+openPropertyBtn.onclick = () => propertyModal.style.display = 'block';
+closePropertyBtn.onclick = () => propertyModal.style.display = 'none';
+
+// Open Edit Property Modal
+editBtns.forEach(btn => {
+    btn.onclick = () => {
+        editModal.style.display = 'block';
+        document.getElementById('edit_id').value = btn.dataset.id;
+        document.getElementById('edit_name').value = btn.dataset.name;
+        document.getElementById('edit_location').value = btn.dataset.location;
+        document.getElementById('edit_rent').value = btn.dataset.rent;
+    }
+});
+closeEditBtn.onclick = () => editModal.style.display = 'none';
+
+// Close modals when clicking outside
+window.onclick = (e) => {
+    if(e.target == propertyModal) propertyModal.style.display = 'none';
+    if(e.target == editModal) editModal.style.display = 'none';
+};
+
+// --- Unread Messages Badge ---
+async function updateUnreadCount() {
+    try {
+        const resp = await fetch('../php/unread_count.php');
+        const data = await resp.json();
+        const msgCountSpan = document.getElementById('msgCount');
+        if(msgCountSpan) msgCountSpan.textContent = `(${data.unread})`;
+    } catch(err) {
+        console.error('Error fetching unread messages:', err);
+    }
+}
+updateUnreadCount(); // initial call
+setInterval(updateUnreadCount, 7000);
+
+// --- Reply Form (optional enhancement) ---
+const replyForm = document.getElementById('replyForm');
+if(replyForm){
+    replyForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const formData = new FormData(replyForm);
+        try {
+            const resp = await fetch('../php/send_message.php', {
+                method: 'POST',
+                body: formData
+            });
+            const data = await resp.json();
+            if(data.success){
+                document.getElementById('messagesContainer').innerHTML += `<p><strong>You:</strong> ${formData.get('body')}</p>`;
+                replyForm.body.value = '';
+            } else {
+                alert('Failed to send message.');
+            }
+        } catch(err){
+            console.error('Error sending message:', err);
+        }
+    });
+}
 </script>
 
 </body>
