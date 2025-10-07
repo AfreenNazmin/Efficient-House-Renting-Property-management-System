@@ -111,14 +111,16 @@ $properties = $stmt_props->get_result();
 
 <div class="dashboard-container">
   <aside class="sidebar">
-    <ul>
-      <li><a href="#explore">Explore</a></li>
-      <li><a href="#my-rentals">My Rentals</a></li>
-      <li><a href="#messages">Messages</a></li>
-      <li><a href="#my-reviews">My Reviews</a></li>
-      <li><a href="#profile">Profile</a></li>
-    </ul>
-  </aside>
+  <ul>
+    <li><a href="#explore">Explore</a></li>
+    <li><a href="#my-rentals">My Rentals</a></li>
+    <li><a href="#messages">Messages</a></li>
+    <li><a href="#my-reviews">My Reviews</a></li>
+    <li><a href="#profile">Profile</a></li>
+    <li><a href="map.php">Map</a></li> <!-- নতুন Map option -->
+  </ul>
+</aside>
+
 
   <main class="dashboard-content">
     <h1>Welcome, <?php echo htmlspecialchars($user['name'] ?? 'Tenant'); ?>!</h1>
@@ -131,55 +133,68 @@ $properties = $stmt_props->get_result();
     <?php endif; ?>
 
     
-    <section id="explore" class="cards-section">
-      <h2>Search Properties</h2>
-      <form method="GET" class="search-bar" id="searchForm">
-        <input name="q" placeholder="Keyword (name, feature)..." value="<?php echo htmlspecialchars($q); ?>">
-        <input name="location" placeholder="Location" value="<?php echo htmlspecialchars($location); ?>">
-        <input type="number" name="min_rent" placeholder="Min rent" min="0" value="<?php echo $min_rent ? $min_rent : ''; ?>">
-        <input type="number" name="max_rent" placeholder="Max rent" min="0" value="<?php echo $max_rent ? $max_rent : ''; ?>">
-        <select name="bedrooms">
-          <option value="">Bedrooms</option>
-          <option value="1" <?php if($bedrooms===1) echo 'selected'; ?>>1</option>
-          <option value="2" <?php if($bedrooms===2) echo 'selected'; ?>>2</option>
-          <option value="3" <?php if($bedrooms===3) echo 'selected'; ?>>3</option>
-          <option value="4" <?php if($bedrooms===4) echo 'selected'; ?>>4</option>
-        </select>
-        <select name="ptype">
-          <option value="">Type</option>
-          <option value="Apartment" <?php if($ptype==='Apartment') echo 'selected'; ?>>Apartment</option>
-          <option value="House" <?php if($ptype==='House') echo 'selected'; ?>>House</option>
-          <option value="Studio" <?php if($ptype==='Studio') echo 'selected'; ?>>Studio</option>
-        </select>
-        <button type="submit" class="rent-btn">Search</button>
-        <a href="tenant.php" class="rent-btn" style="background:#aaa">Reset</a>
-      </form>
 
-      <div class="cards">
-        <?php if($properties->num_rows > 0): ?>
-          <?php while($p = $properties->fetch_assoc()): ?>
-            <div class="card">
-              <?php if(!empty($p['image'])): ?>
-                <img src="../<?php echo htmlspecialchars($p['image']); ?>" alt="img">
-              <?php endif; ?>
-              <h3><?php echo htmlspecialchars($p['property_name']); ?></h3>
-              <p><?php echo htmlspecialchars($p['location']); ?></p>
-              <p><strong>$<?php echo htmlspecialchars($p['rent']); ?> / month</strong></p>
-              <p><?php echo htmlspecialchars($p['bedrooms']); ?> bed — <?php echo htmlspecialchars($p['property_type']); ?></p>
-              <p style="min-height:36px;"><?php echo htmlspecialchars(mb_strimwidth($p['description'], 0, 120, '...')); ?></p>
-              <button class="rent-btn rentNowBtn" 
-                      data-id="<?php echo (int)$p['id']; ?>" 
-                      data-name="<?php echo htmlspecialchars($p['property_name']); ?>" 
-                      data-rent="<?php echo htmlspecialchars($p['rent']); ?>">
-                Rent Now
-              </button>
-            </div>
-          <?php endwhile; ?>
-        <?php else: ?>
-          <p>No properties found for your filters.</p>
-        <?php endif; ?>
-      </div>
-    </section>
+  <h2>Search Properties</h2>
+  <form method="GET" class="search-bar" id="searchForm">
+    <input name="q" placeholder="Keyword (name, feature)..." value="<?php echo htmlspecialchars($q); ?>">
+    <input name="location" placeholder="Location" value="<?php echo htmlspecialchars($location); ?>">
+    <input type="number" name="min_rent" placeholder="Min rent" min="0" value="<?php echo $min_rent ? $min_rent : ''; ?>">
+    <input type="number" name="max_rent" placeholder="Max rent" min="0" value="<?php echo $max_rent ? $max_rent : ''; ?>">
+    <select name="bedrooms">
+      <option value="">Bedrooms</option>
+      <option value="1" <?php if($bedrooms===1) echo 'selected'; ?>>1</option>
+      <option value="2" <?php if($bedrooms===2) echo 'selected'; ?>>2</option>
+      <option value="3" <?php if($bedrooms===3) echo 'selected'; ?>>3</option>
+      <option value="4" <?php if($bedrooms===4) echo 'selected'; ?>>4</option>
+    </select>
+    <select name="ptype">
+      <option value="">Type</option>
+      <option value="Apartment" <?php if($ptype==='Apartment') echo 'selected'; ?>>Apartment</option>
+      <option value="House" <?php if($ptype==='House') echo 'selected'; ?>>House</option>
+      <option value="Studio" <?php if($ptype==='Studio') echo 'selected'; ?>>Studio</option>
+    </select>
+    <button type="submit" class="rent-btn">Search</button>
+    <a href="tenant.php" class="rent-btn" style="background:#aaa">Reset</a>
+  </form>
+
+  <div class="cards">
+    <?php if($properties->num_rows > 0): ?>
+      <?php while($p = $properties->fetch_assoc()): ?>
+        <div class="card">
+          <?php if(!empty($p['image'])): ?>
+            <img src="../<?php echo htmlspecialchars($p['image']); ?>" alt="img">
+          <?php endif; ?>
+          <h3><?php echo htmlspecialchars($p['property_name']); ?></h3>
+          <p><?php echo htmlspecialchars($p['location']); ?></p>
+          <p><strong>$<?php echo htmlspecialchars($p['rent']); ?> / month</strong></p>
+          <p><?php echo htmlspecialchars($p['bedrooms']); ?> bed — <?php echo htmlspecialchars($p['property_type']); ?></p>
+          <p style="min-height:36px;"><?php echo htmlspecialchars(mb_strimwidth($p['description'], 0, 120, '...')); ?></p>
+
+          <!-- Rent Now Button -->
+          <button class="rent-btn rentNowBtn" 
+                  data-id="<?php echo (int)$p['id']; ?>" 
+                  data-name="<?php echo htmlspecialchars($p['property_name']); ?>" 
+                  data-rent="<?php echo htmlspecialchars($p['rent']); ?>">
+            Rent Now
+          </button>
+
+    
+
+<a href="https://www.google.com/maps/search/?api=1&query=<?php echo urlencode($p['location']); ?>" 
+   target="_blank" 
+   class="rent-btn" 
+   style="background:#27ae60; margin-top:4px; display:inline-block;">
+   View on Map
+</a>
+
+
+        </div>
+      <?php endwhile; ?>
+    <?php else: ?>
+      <p>No properties found for your filters.</p>
+    <?php endif; ?>
+  </div>
+</section>
 
     
     <section id="my-rentals" class="cards-section">
