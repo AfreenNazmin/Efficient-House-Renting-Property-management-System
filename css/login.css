@@ -28,7 +28,7 @@ body {
 .role-menu {
   display: flex;
   justify-content: center;
-  margin-bottom: 20px;
+  margin-bottom: 0px;
   border-radius: 8px;
   overflow: hidden;
   box-shadow: 0 4px 15px rgba(0,0,0,0.4);

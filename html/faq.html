@@ -11,7 +11,7 @@
     <section class="properties-header">
     <div class="new-section">
   <section class="bar">
-    <a href="index.html">Home</a>
+    <a href="../php/index.php">Home</a>
     <a href="about.html">About</a>
     <a href="services.html">Services</a>
     <a href="properties.html">Properties</a>
@@ -61,12 +61,17 @@
     </div>
   </main>
 
-  <!-- Footer -->
-  <footer class="faq-footer">
-    <div class="container">
-      <p>© 2025 House Renting & Property Management Project</p>
+    <!-- Footer -->
+      <div id="footer"></div>
     </div>
-  </footer>
+  </section>
+
+  <!-- Footer Loader -->
+  <script>
+    fetch('../html/footer.html') 
+      .then(res => res.text())
+      .then(data => document.getElementById('footer').innerHTML = data);
+  </script>
 
 </body>
 </html>

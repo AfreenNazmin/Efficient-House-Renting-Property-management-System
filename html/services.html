@@ -8,70 +8,96 @@
 </head>
 <body>
 
-    <section class="properties-header">
-    <div class="new-section">
-  <section class="bar">
-    <a href="index.html">Home</a>
-    <a href="about.html">About</a>
-    <a href="services.html">Services</a>
-    <a href="properties.html">Properties</a>
-    <a href="contact.html">Contact</a>
-    <a href="login.html">Login</a>
-    <input type="text" placeholder="Search...">
-<span>🔍</span>
+<section class="properties-header">
+  <div class="new-section">
+    <section class="bar">
+      <a href="../php/index.php">Home</a>
+      <a href="about.html">About</a>
+      <a href="services.html">Services</a>
+      <a href="../php/properties.php">Properties</a>
+      <a href="contact.html">Contact</a>
+      <a href="../php/login.php">Login</a>
+      <input type="text" placeholder="Search...">
+      <span>🔍</span>
+    </section>
 
-  </section>
-  <!-- Services Header -->
-  <section class="services-header">
-    <div class="container">
-      <h1>Our Services</h1>
-      <p>Discover what our property management system can do for you.</p>
-    </div>
-  </section>
+    <!-- Services Header -->
+    <section class="services-header">
+      <div class="container">
+        <h1>Our Services</h1>
+        <p>We prioritize your satisfaction. Happy clients with the best real estate options in Bangladesh are our key to success.</p>
+      </div>
+    </section>
 
-  <!-- Services Overview -->
-  <section class="services-overview">
-    <div class="container">
-      <div class="service-card">
-        <h2>🏠 Property Listings</h2>
-        <p>Browse through properties for rent or sale with detailed info.</p>
-      </div>
-      <div class="service-card">
-        <h2>🔍 Smart Search</h2>
-        <p>Find properties easily with filters for price, location, and more.</p>
-      </div>
-      <div class="service-card">
-        <h2>📅 Booking & Rent</h2>
-        <p>Request visits, apply for rent, and manage your bookings.</p>
-      </div>
-      <div class="service-card">
-        <h2>👨‍💼 Manage Listings</h2>
-        <p>Landlords can add, edit, and manage property listings.</p>
-      </div>
-    </div>
-  </section>
-
-  <section class="properties">
-    <div class="container">
-      <h2>Available Properties</h2>
-      <div class="property-grid">
-        
-        <div class="property-card">
-          <img src="images/placeholder.jpg" alt="Property Image">
-          <h3>2BHK Apartment in City Center</h3>
-          <p>$1200 / month</p>
-          <button>View Details</button>
+    <!-- Services Overview -->
+    <section class="services-overview">
+      <div class="containerov">
+        <div class="service-card">
+          <h2>🏠 Buy</h2>
+          <p>Excellence in customer service is our pride. Trust us as your premier real estate service provider in Bangladesh.</p>
         </div>
-        <div class="property-card">
-          <img src="images/placeholder.jpg" alt="Property Image">
-          <h3>Luxury Villa with Garden</h3>
-          <p>$2500 / month</p>
-          <button>View Details</button>
+        <div class="service-card">
+          <h2>💰 Sell</h2>
+          <p>Stand out with our vast property selection, professional team, exclusive listings, and prime locations.</p>
         </div>
-        
+        <div class="service-card">
+          <h2>🔑 Rent</h2>
+          <p>Rentify connects property owners and tenants, offering hassle-free rental services.</p>
+        </div>
+        <div class="service-card">
+          <h2>🔄 Buy & Sell</h2>
+          <p>A seamless platform where buyers and sellers can directly communicate with property owners.</p>
+        </div>
+        <div class="service-card">
+          <h2>👨‍💼 Agent Services</h2>
+          <p>Expert property inspections and guidance to ensure smooth transactions.</p>
+        </div>
+        <div class="service-card">
+          <h2>📊 Pricing & Plans</h2>
+          <p>Flexible subscription plans for property services: Monthly, Quarterly, Half-Yearly, with unique benefits for owners and tenants.</p>
+        </div>
       </div>
+    </section>
+
+    <!-- Benefits Overview -->
+    <section class="services-benefits">
+      <div class="container">
+        <h2>Benefits for Users</h2>
+        <div class="benefit-grid">
+          <div class="benefit-card">
+            <h3>Property Owners</h3>
+            <ul>
+              <li>Maximize property appreciation</li>
+              <li>Enhanced exposure to qualified audiences</li>
+              <li>Reliable tenants and low maintenance</li>
+              <li>Flexible payment policies</li>
+            </ul>
+          </div>
+          <div class="benefit-card">
+            <h3>Tenants / Buyers</h3>
+            <ul>
+              <li>Extensive selection of high-value properties</li>
+              <li>Dedicated customer support</li>
+              <li>Ready-to-move-in apartments</li>
+              <li>Transparent, hassle-free leasing</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </div>
+</section>
+    <!-- Footer -->
+      <div id="footer"></div>
     </div>
   </section>
 
+  <!-- Footer Loader -->
+  <script>
+    fetch('../html/footer.html') 
+      .then(res => res.text())
+      .then(data => document.getElementById('footer').innerHTML = data);
+  </script>
 </body>
 </html>

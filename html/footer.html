@@ -1,0 +1,217 @@
+ <!DOCTYPE html>
+ <html lang="en">
+ <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+    <style>
+      
+body {
+  font-family: 'Helvetica Neue', sans-serif;
+  color: white;
+  background-color: #FFFFFF;
+}
+
+/* Footer */
+.footer {
+  background-color: #333;
+  color: #fff;
+  padding: 40px 20px;
+}
+.footer p {
+  font-size: 12px;
+}
+.footer .container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 30px;
+  justify-content: space-between;
+}
+.footer-section {
+  flex: 1 1 200px;
+  min-width: 200px;
+}
+.footer h2.logo {
+  font-size: 24px;
+  margin-bottom: 10px;
+}
+.footer h3 {
+  margin-bottom: 10px;
+  color: #ffcc00;
+}
+.footer ul {
+  list-style: none;
+  padding: 0;
+}
+.footer ul li {
+  margin-bottom: 4px;
+}
+.footer ul li a {
+  text-decoration: none;
+  color: #fff;
+  transition: 0.3s;
+}
+.footer ul li a:hover {
+  color: #ffcc00;
+}
+.social-icons a {
+  display: inline-block;
+  margin-right: 10px;
+  color: #fff;
+  font-size: 18px;
+  transition: 0.3s;
+  text-decoration: none;
+}
+.social-icons a:hover {
+  color: #ffcc00;
+}
+.newsletter form {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.newsletter input[type="email"] {
+  padding: 8px;
+  flex: 1;
+  border: none;
+  border-radius: 4px;
+}
+.newsletter button {
+  padding: 8px 16px;
+  border: none;
+  background-color: #ffcc00;
+  color: #222;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.newsletter button:hover {
+  background-color: #e6b800;
+}
+.cr {
+  text-align: center;
+  padding-top: 20px;
+  border-top: 1px solid #444;
+  margin-top: 20px;
+}
+.cr a {
+  text-decoration: none;
+  color: #ffcc00;
+  margin: 0 5px;
+}
+
+
+@media (max-width: 900px) {
+  .footer .container {
+    flex-direction: column;
+    gap: 20px;
+  }
+}
+@media (max-width: 768px) {
+
+  .bar {
+    display: none;
+  }
+}
+
+    </style>
+ </head>
+ <body>
+  <!-- Footer section-->
+  <footer class="footer">
+        <div class="container">
+      <div class="footer-section about">
+        <h2 class="logo">Title+logo</h2>
+        <p class="tagline">Finding your perfect home made simple</p>
+        <p class="mission">Our mission is to make property search fast, easy, and reliable.</p>
+      </div>
+
+      <!-- Quick Links -->
+      <div class="footer-section links">
+        <h3>Quick Links</h3>
+        <ul>
+          <li><a href="index.php">Home</a></li>
+          <li><a href="../html/about.html">About Us</a></li>
+          <li><a href="../html/contact.html">Contact Us</a></li>
+          <li><a href="../html/terms.html">Terms & Privacy Policy</a></li>
+          <li><a href="../html/faq.html">FAQ</a></li>
+        </ul>
+      </div>
+
+      <!-- Services / Categories -->
+      <div class="footer-section_services">
+        <h3>Services</h3>
+        <ul>
+          
+         <li><a href="../php/buy_properties.php">Buy</a></li>
+
+          <li><a href="../php/login.php?role=landlord">Sell</a></li>
+          <li><a href="../php/featured_properties.php">Featured Properties</a></li>
+          <li><a href="../html/agents.html">Agents</a></li>
+        </ul>
+      </div>
+
+      <!-- Contact Information -->
+      <div class="footer-section contact">
+        <h3>Contact</h3>
+        <p>Phone: +123 456 7890</p>
+        <p>Email: info@.com</p>
+        <p>Address: 123 Main Street, City</p>
+        <p>Customer Care: +123 456 7891</p>
+      </div>
+
+      <!-- Social Media -->
+      <div class="footer-section social">
+        <h3>Follow Us</h3>
+        <div class="social-icons">
+          <a href="#"><i class="fab fa-facebook-f"></i></a>
+          <a href="#"><i class="fab fa-instagram"></i></a>
+          <a href="#"><i class="fab fa-twitter"></i></a>
+          <a href="#"><i class="fab fa-linkedin-in"></i></a>
+          <a href="#"><i class="fab fa-youtube"></i></a>
+          <a href="#"><i class="fab fa-tiktok"></i></a>
+        </div>
+      </div>
+
+      <!-- Newsletter -->
+<div class="footer-section newsletter">
+  <h3>Subscribe</h3>
+  <form id="newsletterForm">
+    <input type="email" id="newsletterEmail" name="email" placeholder="Enter your email" required>
+    <button type="submit">Subscribe</button>
+  </form>
+  <p id="subscribeMessage" style="color:#f56c02;"></p>
+</div>
+
+
+   
+    <!-- right Info -->
+    <div class="cr">
+      <p>© 2025 Rentify.All Rights Reserved.</p>
+      <p><a href="../html/terms.html">Terms of Service</a> | <a href="#">Privacy Policy</a></p>
+    </div>
+  </footer> 
+  <script>
+  document.getElementById('newsletterForm').addEventListener('submit', function(e){
+    e.preventDefault(); // prevent page reload
+
+    let email = document.getElementById('newsletterEmail').value;
+
+    fetch('subscribe_newsletter.php', {  // Ensure the path is correct
+        method: 'POST',
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+        body: 'email=' + encodeURIComponent(email)
+    })
+    .then(res => res.text())
+    .then(data => {
+        document.getElementById('subscribeMessage').innerText = data;
+        document.getElementById('newsletterForm').reset();
+    })
+    .catch(err => console.error('Error:', err));
+});
+</script>
+
+ 
+ </body>
+ </html> 

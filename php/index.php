@@ -19,9 +19,9 @@
       <a href="index.php">Home</a>
       <a href="../html/about.html">About</a>
       <a href="../html/services.html">Services</a>
-      <a href="../html/properties.html">Properties</a>
+      <a href="properties.php">Properties</a>
       <a href="../html/contact.html">Contact</a>
-      <a href="../html/login.html">Login</a>
+      <a href="login.php">Login</a>
     </nav>
   </div>
 
@@ -43,7 +43,7 @@
 
       <!-- Hero section Buttons -->
       <div class="buttons">
-       <a href="../html/properties.html" class="btn-outline">BROWSE PROPERTIES</a>
+       <a href="properties.php" class="btn-outline">BROWSE PROPERTIES</a>
         <a href="../html/services.html" class="btn-outline">LEARN MORE</a>
       </div>
     </div>
@@ -54,19 +54,19 @@
     <section class="bar">
       <a href="index.php">Home</a>
       <a href="../html/about.html">About</a>
-      <a href="../html/services.html">Favourite</a>
-      <a href="../html/properties.html">Properties</a>
+     
+
+      <a href="properties.php">Properties</a>
       <a href="../html/contact.html">Contact</a>
-      <a href="../html/login.html">Login</a>
+      <a href="login.php">Login</a>
       <input type="text" placeholder="Search...">
       <span>🔍</span>
     </section>
 
-   <section class="popular-properties">
+ <section class="popular-properties">
   <h2>Popular Properties</h2>
   <div class="properties-grid">
     <?php
-      
       include 'config.php';
 
       $query = "SELECT * FROM properties ORDER BY id DESC LIMIT 3";
@@ -75,19 +75,20 @@
       if(mysqli_num_rows($result) > 0){
         while($row = mysqli_fetch_assoc($result)){
     ?>
-         <div class="listing-card">
-  <img src="../uploads/<?php echo !empty($row['image']) ? htmlspecialchars($row['image']) : 'default.jpg'; ?>" 
-     alt="<?php echo !empty($row['property_name']) ? htmlspecialchars($row['property_name']) : 'Property'; ?>">
+          <div class="property-card">
+            <img src="<?php 
+    echo !empty($row['image']) 
+        ? '../' . htmlspecialchars($row['image']) 
+        : '../uploads/default.jpg'; 
+?>" 
+alt="<?php echo !empty($row['property_name']) ? htmlspecialchars($row['property_name']) : 'Property'; ?>">
 
-
-  <h3><?php echo isset($row['property_name']) ? htmlspecialchars($row['property_name']) : 'Unnamed'; ?></h3>
-  <p>
-    $<?php echo isset($row['rent']) ? $row['rent'] : '0'; ?>/month - 
-    <?php echo isset($row['location']) ? htmlspecialchars($row['location']) : 'Unknown'; ?>
-  </p>
-</div>
-
-
+              <h3><?php echo !empty($row['property_name']) ? htmlspecialchars($row['property_name']) : 'Unnamed'; ?></h3>
+              <p>
+                $<?php echo !empty($row['rent']) ? $row['rent'] : '0'; ?>/month - 
+                <?php echo !empty($row['location']) ? htmlspecialchars($row['location']) : 'Unknown'; ?>
+              </p>
+          </div>
     <?php
         }
       } else {
@@ -95,9 +96,27 @@
       }
     ?>
   </div>
-  <div class="view-more-btn">
-    <button onclick="location.href='properties.html'">See More Properties</button>
-  </div>
+</section>
+<div class="view-more-btn" style="text-align: center; margin: 30px 0;">
+  <button 
+    onclick="location.href='properties.php'" 
+    style="
+      padding: 12px 25px; 
+      background-color: #1e73be; 
+      color: #fff; 
+      border: none; 
+      border-radius: 6px; 
+      font-size: 1rem; 
+      cursor: pointer; 
+      transition: background-color 0.3s ease;
+    "
+    onmouseover="this.style.backgroundColor='#155f8a'"
+    onmouseout="this.style.backgroundColor='#1e73be'"
+  >
+    See More Properties
+  </button>
+</div>
+
 </section>
 
 
@@ -131,11 +150,12 @@
       <div class="footer-section_services">
         <h3>Services</h3>
         <ul>
-          <li><a href="#">Rent</a></li>
-          <li><a href="#">Buy</a></li>
-          <li><a href="#">Sell</a></li>
-          <li><a href="#">Featured Properties</a></li>
-          <li><a href="#">Agents</a></li>
+         
+           <li><a href="buy_properties.php">Buy</a></li>
+
+          <li><a href="login.php?role=landlord">Sell</a></li>
+          <li><a href="featured_properties.php">Featured Properties</a></li>
+          <li><a href="../html/agents.html">Agents</a></li>
         </ul>
       </div>
 
