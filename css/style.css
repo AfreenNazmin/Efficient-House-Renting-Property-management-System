@@ -202,7 +202,7 @@ body {
   color: #555;
 }
 .bar .fav-link i {
-    color: #f0a500; /* outline color */
+    color: #f0a500; 
     font-size: 1.2rem;
     margin-right: 5px;
 }
