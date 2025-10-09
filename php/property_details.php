@@ -1,5 +1,6 @@
 <?php
-include '../php/config.php';
+include 'config.php';
+include 'bar.php';
 
 if (!isset($_GET['id'])) {
     header("Location: properties.php");
@@ -29,13 +30,11 @@ $property = $result->fetch_assoc();
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 <body>
-    <div class="bar">
-</div>
+ 
+<div class="detcon">
 
-
-<div class="det-container">
   <!-- Title -->
-  <h1><i class="fa-solid fa-building"></i> <?php echo htmlspecialchars($property['property_name']); ?></h1>
+  <h1 style="color: #333 ; "><i class="fa-solid fa-building"></i> <?php echo htmlspecialchars($property['property_name']); ?></h1>
 
   <!-- Property Main Image -->
   <img src="<?php echo !empty($property['image']) ? '../' . htmlspecialchars($property['image']) : '../uploads/placeholder.jpg'; ?>" alt="Property Image">
@@ -157,17 +156,14 @@ $property = $result->fetch_assoc();
       <?php echo $property['map_embed']; ?>
     </div>
   <?php endif; ?>
-</div></div>
-
+  </div>
 <!-- Footer -->
 <div id="footer"></div>
 <script>
   fetch('../html/footer.html')
     .then(res => res.text())
     .then(data => document.getElementById('footer').innerHTML = data);
-    fetch('../html/bar.html')
-    .then(res => res.text())
-    .then(data => document.getElementById('bar').innerHTML = data);
+    
     function showRentalForm() {
  
   const form = document.getElementById('rentalForm');

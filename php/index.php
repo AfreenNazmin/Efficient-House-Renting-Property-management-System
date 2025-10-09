@@ -1,3 +1,8 @@
+<?php
+
+include 'property_card.php';
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -17,10 +22,10 @@
 
     <nav class="mobile-menu">
       <a href="index.php">Home</a>
-      <a href="../html/about.html">About</a>
-      <a href="../html/services.html">Services</a>
+      <a href="about.php">About</a>
+      <a href="services.php">Services</a>
       <a href="properties.php">Properties</a>
-      <a href="../html/contact.html">Contact</a>
+      <a href="contact.php">Contact</a>
       <a href="login.php">Login</a>
     </nav>
   </div>
@@ -44,24 +49,15 @@
       <!-- Hero section Buttons -->
       <div class="buttons">
        <a href="properties.php" class="btn-outline">BROWSE PROPERTIES</a>
-        <a href="../html/services.html" class="btn-outline">LEARN MORE</a>
+        <a href="services.php" class="btn-outline">LEARN MORE</a>
       </div>
     </div>
   </div>
-
+<?php
+include 'bar.php';
+?>
   <!-- Services & Featured Properties Section -->
   <div class="new-section">
-    <section class="bar">
-      <a href="index.php">Home</a>
-      <a href="../html/about.html">About</a>
-     
-
-      <a href="properties.php">Properties</a>
-      <a href="../html/contact.html">Contact</a>
-      <a href="login.php">Login</a>
-      <input type="text" placeholder="Search...">
-      <span>🔍</span>
-    </section>
 
  <section class="popular-properties">
   <h2>Popular Properties</h2>
@@ -72,29 +68,20 @@
       $query = "SELECT * FROM properties ORDER BY id DESC LIMIT 3";
       $result = mysqli_query($conn, $query);
 
-      if(mysqli_num_rows($result) > 0){
-        while($row = mysqli_fetch_assoc($result)){
-    ?>
-          <div class="property-card">
-            <img src="<?php 
-    echo !empty($row['image']) 
-        ? '../' . htmlspecialchars($row['image']) 
-        : '../uploads/default.jpg'; 
-?>" 
-alt="<?php echo !empty($row['property_name']) ? htmlspecialchars($row['property_name']) : 'Property'; ?>">
+     $fav_ids = [];
+if (isset($_SESSION['user_id'])) {
+    $res = $conn->query("SELECT property_id FROM favourites WHERE tenant_id=" . $_SESSION['user_id']);
+    while ($r = $res->fetch_assoc()) $fav_ids[] = $r['property_id'];
+}
+?>
 
-              <h3><?php echo !empty($row['property_name']) ? htmlspecialchars($row['property_name']) : 'Unnamed'; ?></h3>
-              <p>
-                $<?php echo !empty($row['rent']) ? $row['rent'] : '0'; ?>/month - 
-                <?php echo !empty($row['location']) ? htmlspecialchars($row['location']) : 'Unknown'; ?>
-              </p>
-          </div>
-    <?php
-        }
-      } else {
-        echo '<p>No properties found.</p>';
-      }
-    ?>
+<?php if ($result && mysqli_num_rows($result) > 0): ?>
+    <?php while ($row = mysqli_fetch_assoc($result)): ?>
+        <?php renderPropertyCard($row, $fav_ids); ?>
+    <?php endwhile; ?>
+<?php else: ?>
+    <p style="text-align:center; color:#555;">No properties found.</p>
+<?php endif; ?>
   </div>
 </section>
 <div class="view-more-btn" style="text-align: center; margin: 30px 0;">

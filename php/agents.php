@@ -1,3 +1,7 @@
+<?php
+include 'bar.php';
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,7 +10,7 @@
     <link rel="stylesheet" href="../css/buy_property.css">
 </head>
 <body>
-    <div id="navbar"></div>
+    
     <section class="agents-section">
     <h2>🏡 Meet Our Agents</h2>
     <div class="agents-grid">

@@ -1,5 +1,6 @@
 <?php
 include 'config.php';
+include 'bar.php';
 include 'property_card.php'; 
 
 // Fetch all properties (available or not)
@@ -55,13 +56,33 @@ if (isset($_SESSION['user_id'])) {
 
 <!-- Navbar & Footer JS -->
 <script>
-  fetch('../html/bar.html')
-    .then(res => res.text())
-    .then(data => document.getElementById('bar').innerHTML = data);
+  
 
   fetch('../html/footer.html')
     .then(res => res.text())
     .then(data => document.getElementById('footer').innerHTML = data);
+
+document.querySelectorAll('.fav-icon').forEach(icon => {
+  icon.addEventListener('click', () => {
+    const id = icon.dataset.id;
+    <?php if (!isset($_SESSION['user_id'])): ?>
+      alert('Please login first to add favourites!');
+    <?php else: ?>
+      fetch('../php/add_favourite.php', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+        body: 'property_id=' + id
+      })
+      .then(res => res.text())
+      .then(msg => {
+        alert(msg);
+        icon.classList.toggle('fas');
+        icon.classList.toggle('far');
+      });
+    <?php endif; ?>
+  });
+});
+
 </script>
 </body>
 </html>

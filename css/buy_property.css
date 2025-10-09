@@ -1,4 +1,4 @@
-/* ====== General Reset ====== */
+
 * {
   margin: 0;
   padding: 0;
@@ -10,42 +10,6 @@ body {
   background-color: #f4f4f4;
   color: #333;
   line-height: 1.6;
-}
-
-/* ====== Top Bar ====== */
-.bar {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background-color: #222;
-  padding: 15px 0;
-  width: 100%;
-}
-
-.bar a {
-  text-decoration: none;
-  color: #f8f8f8;
-  font-weight: bold;
-  margin: 0 20px;
-  transition: color 0.3s ease;
-}
-
-.bar a:hover,
-.bar a.active {
-  color: #f0a500;
-}
-.fav-icon {
-    display: block;
-    text-align: right;
-    margin: 8px 12px 0 0; 
-    font-size: 1.4rem;
-    color: #f0a500;
-    cursor: pointer;
-    transition: transform 0.3s ease;
-}
-
-.fav-icon:hover {
-    transform: scale(1.2);
 }
 /* ====== Container ====== */
 .det-container {
@@ -73,56 +37,7 @@ body {
   gap: 25px;
 }
 
-.property-card {
-  background: #fff;
-  border-radius: 10px;
-  overflow: hidden;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
 
-.property-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
-}
-
-.property-card img {
-  width: 100%;
-  height: 200px;
-  object-fit: cover;
-}
-
-.property-card h3 {
-  font-size: 1.2rem;
-  margin: 15px 0 5px;
-  color: #222;
-  text-align: center;
-}
-
-.property-card p {
-  font-size: 0.95rem;
-  text-align: center;
-  color: #555;
-  margin-bottom: 5px;
-}
-
-/* ====== View Details Button ====== */
-.property-card a {
-  display: block;
-  text-align: center;
-  background-color: #1e73be;
-  color: #fff;
-  padding: 8px 0;
-  margin: 10px auto 15px;
-  width: 80%;
-  border-radius: 5px;
-  text-decoration: none;
-  transition: background-color 0.3s ease;
-}
-
-.property-card a:hover {
-  background-color: #155f8a;
-}
 
 /* ====== Footer Embed ====== */
 #footer {
@@ -143,14 +58,6 @@ body {
   color: #1e73be;
 }
 
-/* ====== Search Input in Top Bar ====== */
-.bar input[type="text"] {
-  padding: 6px 10px;
-  margin-left: 15px;
-  border-radius: 5px;
-  border: 1px solid #ccc;
-  outline: none;
-}
 
 /* Adjust search input on smaller screens */
 @media screen and (max-width: 768px) {

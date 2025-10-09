@@ -1,3 +1,7 @@
+<?php
+include 'bar.php';
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,17 +11,7 @@
   <link rel="stylesheet" href="../css/terms.css">
 </head>
 <body>
-   <div class="new-section">
-  <section class="bar">
-    <a href="../php/index.php">Home</a>
-    <a href="about.html">About</a>
-    <a href="services.html">Services</a>
-    <a href="../php/properties.php">Properties</a>
-    <a href="contact.html">Contact</a>
-    <a href="../php/login.php">Login</a>
-    <input type="text" placeholder="Search...">
-<span>🔍</span></section>
-</div>
+ 
     <section class="properties-header">
  
 

@@ -8,10 +8,11 @@ function renderPropertyCard($property, $fav_ids = []) {
     $bathrooms = !empty($property['bathrooms']) ? htmlspecialchars($property['bathrooms']) : '0';
     $property_type = !empty($property['property_type']) ? htmlspecialchars($property['property_type']) : 'N/A';
     $id = (int)$property['id'];
+    $is_fav = in_array($id, $fav_ids);
     ?>
     <div class="property-card">
         <img src="<?= $image ?>" alt="<?= $property_name ?>">
-        <i class="fa<?= in_array($id, $fav_ids) ? 's' : 'r'; ?> fa-heart fav-icon" data-id="<?= $id ?>"></i>
+        <i class="fa<?= $is_fav ? 's' : 'r'; ?> fa-heart fav-icon" data-id="<?= $id ?>"></i>
         <h3><?= $property_name ?></h3>
         <p><strong>$<?= $rent ?> / month</strong></p>
         <p><i class="fa-solid fa-location-dot"></i> <?= $location ?></p>
@@ -30,107 +31,56 @@ function renderPropertyCard($property, $fav_ids = []) {
     <?php
 }
 ?>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <style>
-        .property-card {
+
+<!-- Include Font Awesome -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+
+<style>
+.property-card {
   position: relative;
   background: #2b2b2b;
   border-radius: 10px;
   overflow: hidden;
   width: 300px;
-  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 6px 15px rgba(0,0,0,0.4);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
-.property-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.6);
-}
-.property-card img {
-  width: 100%;
-  height: 200px;
-  object-fit: cover;
-  border-bottom: 1px solid #444;
-}
-.fav-icon {
-  position: absolute;
-  top: 210px;
-  right: 12px;
-  font-size: 1.4rem;
-  color: #f0a500;
-  cursor: pointer;
-  transition: transform 0.3s ease;
-}
-.fav-icon:hover {
-  transform: scale(1.2);
-}
-.property-card h3 {
-  margin: 15px;
-  font-size: 1.3rem;
-  color: #fff;
-}
-.property-card p {
-  margin: 0 15px 10px 15px;
-  color: #ccc;
-  font-size: 0.95rem;
-}
-.property-card i {
-  color: #ffdd57;
-  margin-right: 5px;
-}
-.property-card button {
-  margin: 10px 15px 15px 15px;
-  padding: 10px 15px;
-  border: none;
-  border-radius: 6px;
-  background: #ff5722;
-  color: #fff;
-  font-weight: bold;
-  cursor: pointer;
-  transition: background 0.3s;
-}
-.property-card button:hover {
-  background: #e64a19;
-}
+.property-card:hover { transform: translateY(-5px); box-shadow:0 8px 25px rgba(0,0,0,0.6);}
+.property-card img { width: 100%; height:200px; object-fit:cover; border-bottom:1px solid #444; }
+.fav-icon { position:absolute; top:210px; right:12px; font-size:1.4rem; color:#f0a500; cursor:pointer; transition: transform 0.3s; }
+.fav-icon:hover { transform:scale(1.2); }
+.property-card h3 { margin:15px; font-size:1.3rem; color:#fff; }
+.property-card p { margin:0 15px 10px 15px; color:#ccc; font-size:0.95rem; }
+.property-card i { color:#ffdd57; margin-right:5px; }
+.property-card button { margin:10px 15px 15px 15px; padding:10px 15px; border:none; border-radius:6px; background:#ff5722; color:#fff; font-weight:bold; cursor:pointer; transition:background 0.3s; }
+.property-card button:hover { background:#e64a19; }
+</style>
 
-        </style>
-</head>
-<body>
- <script>
- <script>
-document.querySelectorAll('.fav-icon').forEach(icon => {
-    icon.addEventListener('click', () => {
-        <?php if (!isset($_SESSION['user_id'])): ?>
-            alert('Please login first to add favourites!');
-            return;
-        <?php else: ?>
+<script>
+// Wait until DOM is fully loaded
+document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.fav-icon').forEach(icon => {
+        icon.addEventListener('click', () => {
             const id = icon.dataset.id;
-            fetch('../php/add_favourite.php', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-                body: 'property_id=' + id
-            })
-            .then(res => res.text())
-            .then(msg => {
-                alert(msg);
-                // Toggle heart fill
-                if(icon.classList.contains('far')) {
-                    icon.classList.remove('far');
-                    icon.classList.add('fas');
-                } else {
-                    icon.classList.remove('fas');
-                    icon.classList.add('far');
-                }
-            });
-        <?php endif; ?>
+
+            <?php if (!isset($_SESSION['user_id'])): ?>
+                alert('Please login first to add favourites!');
+                return;
+            <?php else: ?>
+                fetch('../php/add_favourite.php', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                    body: 'property_id=' + id
+                })
+                .then(res => res.text())
+                .then(msg => {
+                    alert(msg);
+                    // Toggle heart class
+                    icon.classList.toggle('fas');
+                    icon.classList.toggle('far');
+                });
+            <?php endif; ?>
+        });
     });
 });
 </script>
-
-
- </script>   
-</body>
-</html>

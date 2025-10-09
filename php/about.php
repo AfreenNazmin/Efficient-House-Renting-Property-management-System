@@ -1,3 +1,9 @@
+
+<?php
+$allowed_links = ['Home','Services','Contact','Login','Search'];
+include 'bar.php';
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,19 +12,19 @@
     <title>About Us</title>
     <link rel="stylesheet" href="../css/about.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-
+<style>
+    footer .container {
+  padding: 0;
+  background: none;
+}
+    </style>
 </head>
 <body>
 
 <section class="properties-header">
     <div class="new-section">
 
-        <!-- Navigation Bar -->
-       <div id="navbar"></div>
-
-
-
-        <!-- Tagline -->
+    <!-- Tagline -->
         <section class="tagline">
             <div class="container">
                 <h1>Your Dream Home, Our Commitment</h1>
@@ -141,7 +147,7 @@
             <div class="team-cards">
                 <div class="card">
                     <img src="images/leader1.jpg" alt="member 1">
-                    <h3>Mst. Afreen/h3>
+                    <h3>Mst. Afreen</h3>
                     <p>ID: 1167</p>
                     <p>Batch: 58th (A)</p>
                 </div>
@@ -170,12 +176,10 @@
 
     </div>
 <script>
-    fetch('footer.html')
+    fetch('../html/footer.html')
   .then(res => res.text())
   .then(data => document.getElementById('footer').innerHTML = data);
-fetch('navbar.html')  
-  .then(res => res.text())
-  .then(data => document.getElementById('navbar').innerHTML = data);
+
 </script>
 </body>
 </html>

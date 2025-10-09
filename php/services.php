@@ -1,3 +1,7 @@
+<?php
+include 'bar.php';
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>

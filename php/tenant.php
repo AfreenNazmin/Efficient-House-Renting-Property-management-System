@@ -1,7 +1,3 @@
-<<<<<<< HEAD
-
-=======
->>>>>>> 2df40a6 (save progress)
 <?php
 session_start();
 if(!isset($_SESSION['user_id']) && !isset($_SESSION['username'])){
@@ -13,7 +9,7 @@ include 'config.php';
 $allowed_links = ['Home','About','Favourites','Contact','Logout'];
 
 include 'bar.php';
-
+include 'property_card.php';
 // fetch tenant id
 if(isset($_SESSION['user_id'])){
     $tenant_id = (int)$_SESSION['user_id'];
@@ -158,24 +154,22 @@ $properties = $stmt_props->get_result();
         <a href="tenant.php" class="rent-btn reset-btn">Reset</a>
     </form>
 </div>
+<?php $fav_ids = [];
+if(isset($_SESSION['user_id'])){
+    $res = $conn->query("SELECT property_id FROM favourites WHERE tenant_id=" . $_SESSION['user_id']);
+    while($r = $res->fetch_assoc()) $fav_ids[] = $r['property_id'];
+} ?>
+<div class="cards">
+    <?php if($properties->num_rows > 0): 
+        while($p = $properties->fetch_assoc()): 
+            renderPropertyCard($p, $fav_ids); // call property_card.php function
+        endwhile; 
+    else: ?>
+        <p>No properties found.</p>
+    <?php endif; ?>
+</div>
 
-        <div class="cards">
-            <?php if($properties->num_rows>0): while($p=$properties->fetch_assoc()): ?>
-                <div class="card">
-                    <?php if($p['image']): ?>
-                        <img src="../<?php echo $p['image'];?>" alt="">
-                    <?php endif; ?>
-                    <h3><?php echo htmlspecialchars($p['property_name']); ?></h3>
-                    <p><?php echo htmlspecialchars($p['location']); ?></p>
-                    <p><strong>$<?php echo $p['rent'];?>/month</strong></p>
-                    <p><?php echo $p['bedrooms'];?> bed — <?php echo $p['property_type'];?></p>
-                    <p><?php echo htmlspecialchars(mb_strimwidth($p['description'],0,120,'...'));?></p>
-                    <button class="rent-btn rentNowBtn" data-id="<?php echo $p['id'];?>" data-name="<?php echo htmlspecialchars($p['property_name']);?>" data-rent="<?php echo $p['rent'];?>">Rent Now</button>
-                </div>
-            <?php endwhile; else: ?>
-                <p>No properties found.</p>
-            <?php endif; ?>
-        </div>
+
 
         <section id="my-rentals">
             <h2>My Rentals</h2>

@@ -236,19 +236,20 @@ body {
 }
 
 .team-cards .card {
-    background: #fff;
-    padding: 25px;
-    border-radius: 12px;
-    width: 220px;
-    box-shadow: 0 6px 15px rgba(0,0,0,0.08);
-    transition: transform 0.3s, box-shadow 0.3s;
+  background: #fff;
+  padding: 35px;
+  border-radius: 14px;
+  width: 260px;
+  box-shadow: 0 6px 15px rgba(0,0,0,0.08);
+  transition: transform 0.3s, box-shadow 0.3s;
 }
-
 .team-cards .card img {
-    width: 100%;
-    border-radius: 50%;
-    margin-bottom: 15px;
-    border: 3px solid #f0a500;
+  width: 130px;
+  height: 130px;
+  border-radius: 50%;
+  margin-bottom: 15px;
+  border: 4px solid #f0a500;
+  object-fit: cover;
 }
 
 .team-cards .card h3 {

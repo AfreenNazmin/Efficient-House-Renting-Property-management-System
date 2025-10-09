@@ -4,7 +4,7 @@ if(!isset($allowed_links)) {
     $allowed_links = array_keys([
         'Home' => 'index.php',
         'About' => '../html/about.html',
-        'Favourites' => 'favourites.php',
+        
         'Properties' => 'properties.php',
         'Contact' => '../html/contact.html',
         'Login' => 'login.php',
@@ -16,13 +16,15 @@ if(!isset($allowed_links)) {
 // All possible links
 $all_links = [
     'Home' => 'index.php',
-    'About' => '../html/about.html',
+    'About' => 'about.php',
     'Favourites' => 'favourites.php',
     'Properties' => 'properties.php',
-    'Contact' => '../html/contact.html',
+    'Contact' => 'contact.php',
     'Login' => 'login.php',
     'Logout' => 'logout.php',
+     'Services' => 'Services.php',
     'Search' => '#'
+   
 ];
 ?>
 
@@ -78,7 +80,7 @@ $all_links = [
   color: #555;
 }
 .bar .fav-link i {
-    color: #f0a500; /* outline color */
+    color: #f0a500; 
     font-size: 1.2rem;
     margin-right: 5px;
 }
