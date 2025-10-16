@@ -119,6 +119,9 @@ $properties = $stmt_props->get_result();
             <li><a href="#my-reviews">My Reviews</a></li>
             <li><a href="#profile">Profile</a></li>
             <li><a href="map.php">Map</a></li>
+           <li><a href="roommate_search.php">Find Roommate</button></li>
+
+
         </ul>
     </aside>
 
@@ -201,6 +204,9 @@ if(isset($_SESSION['user_id'])){
     </main>
 </div>
 
+
+
+
 <!-- JS -->
 <script>
 const filterBtn = document.getElementById('toggleFilter');
@@ -248,8 +254,10 @@ rentBtns.forEach(b=>{
 closeRent.onclick = ()=> rentModal.style.display = 'none';
 window.onclick = (e)=> { if(e.target == rentModal) rentModal.style.display = 'none'; }
 
-
 </script>
+
+
+
 
 </body>
 </html>

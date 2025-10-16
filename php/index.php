@@ -126,10 +126,10 @@ if (isset($_SESSION['user_id'])) {
         <h3>Quick Links</h3>
         <ul>
           <li><a href="index.php">Home</a></li>
-          <li><a href="../html/about.html">About Us</a></li>
-          <li><a href="../html/contact.html">Contact Us</a></li>
-          <li><a href="../html/terms.html">Terms & Privacy Policy</a></li>
-          <li><a href="../html/faq.html">FAQ</a></li>
+          <li><a href="about.php">About Us</a></li>
+          <li><a href="contact.php">Contact Us</a></li>
+          <li><a href="terms.php">Terms & Privacy Policy</a></li>
+          <li><a href="faq.php">FAQ</a></li>
         </ul>
       </div>
 
@@ -142,7 +142,7 @@ if (isset($_SESSION['user_id'])) {
 
           <li><a href="login.php?role=landlord">Sell</a></li>
           <li><a href="featured_properties.php">Featured Properties</a></li>
-          <li><a href="../html/agents.html">Agents</a></li>
+          <li><a href="agents.php">Agents</a></li>
         </ul>
       </div>
 
@@ -150,8 +150,8 @@ if (isset($_SESSION['user_id'])) {
       <div class="footer-section contact">
         <h3>Contact</h3>
         <p>Phone: +123 456 7890</p>
-        <p>Email: info@.com</p>
-        <p>Address: 123 Main Street, City</p>
+        <p>Email: info@rentify.com</p>
+        <p>Address: 123 Main Street, Dhaka</p>
         <p>Customer Care: +123 456 7891</p>
       </div>
 
@@ -181,7 +181,7 @@ if (isset($_SESSION['user_id'])) {
     <!-- right Info -->
     <div class="cr">
       <p>© 2025 Page name. All Rights Reserved.</p>
-      <p><a href="../html/terms.html">Terms of Service</a> | <a href="#">Privacy Policy</a></p>
+      <p><a href="terms.php">Terms of Service</a> | <a href="privacy.php">Privacy Policy</a></p>
     </div>
   </footer>
   
