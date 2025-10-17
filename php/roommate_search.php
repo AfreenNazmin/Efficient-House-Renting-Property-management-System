@@ -1,5 +1,5 @@
 <?php
-include('db_connect.php'); 
+include('config.php'); 
 
 
 $query = "SELECT * FROM roommates WHERE 1=1";
