@@ -151,7 +151,7 @@
       <div class="footer-section contact">
         <h3>Contact</h3>
         <p>Phone: +123 456 7890</p>
-        <p>Email: info@.com</p>
+        <p>Email: info@rentify.com</p>
         <p>Address: 123 Main Street, City</p>
         <p>Customer Care: +123 456 7891</p>
       </div>
@@ -184,16 +184,16 @@
     <!-- right Info -->
     <div class="cr">
       <p>© 2025 Rentify.All Rights Reserved.</p>
-      <p><a href="../html/terms.html">Terms of Service</a> | <a href="#">Privacy Policy</a></p>
+      <p><a href= "terms.php">Terms of Service</a> | <a href="privacy.php">Privacy Policy</a></p>
     </div>
   </footer> 
   <script>
   document.getElementById('newsletterForm').addEventListener('submit', function(e){
-    e.preventDefault(); // prevent page reload
+    e.preventDefault(); 
 
     let email = document.getElementById('newsletterEmail').value;
 
-    fetch('subscribe_newsletter.php', {  // Ensure the path is correct
+    fetch('subscribe_newsletter.php', {  
         method: 'POST',
         headers: {'Content-Type': 'application/x-www-form-urlencoded'},
         body: 'email=' + encodeURIComponent(email)
