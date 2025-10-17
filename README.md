@@ -3,7 +3,6 @@ Final Year Project: House Renting &amp; Property Management System
 ## Updates - Email Verification & PHPMailer
 
 ### What's New
-- Users now receive a **verification link** in their email instead of entering a code.
 - Verification success page now includes a **“Go to Login” button** for better UX.
 - Added **PHPMailer via Composer** to handle sending verification emails securely.
 - Updated `users` table:
