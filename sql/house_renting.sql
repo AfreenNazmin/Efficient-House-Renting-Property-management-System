@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Oct 08, 2025 at 01:14 AM
+-- Generation Time: Oct 17, 2025 at 04:56 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -58,6 +58,13 @@ CREATE TABLE `favourites` (
   `property_id` int(11) NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `favourites`
+--
+
+INSERT INTO `favourites` (`id`, `tenant_id`, `property_id`, `created_at`) VALUES
+(1, 1, 1, '2025-10-09 04:59:48');
 
 -- --------------------------------------------------------
 
@@ -149,7 +156,8 @@ CREATE TABLE `rentals` (
   `tenant_id` int(11) NOT NULL,
   `start_date` date DEFAULT NULL,
   `end_date` date DEFAULT NULL,
-  `status` enum('active','completed') DEFAULT 'active'
+  `status` enum('active','completed') DEFAULT 'active',
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -202,6 +210,26 @@ CREATE TABLE `reviews` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `roommates`
+--
+
+CREATE TABLE `roommates` (
+  `id` int(11) NOT NULL,
+  `name` varchar(100) DEFAULT NULL,
+  `gender` enum('Male','Female','Other') DEFAULT NULL,
+  `age` int(11) DEFAULT NULL,
+  `location` varchar(100) DEFAULT NULL,
+  `budget` int(11) DEFAULT NULL,
+  `occupation` varchar(100) DEFAULT NULL,
+  `smoking` enum('Yes','No') DEFAULT NULL,
+  `pets` enum('Yes','No') DEFAULT NULL,
+  `cleanliness` enum('High','Medium','Low') DEFAULT NULL,
+  `about` text DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `users`
 --
 
@@ -224,8 +252,7 @@ CREATE TABLE `users` (
 
 INSERT INTO `users` (`id`, `name`, `email`, `password`, `phone`, `created_at`, `is_verified`, `role`, `reset_token`, `reset_expiry`) VALUES
 (1, 'Afreen ', 'afreen@gmail.com', '$2y$10$41p7IIaZq1CsYC/4Az1.MeTW4mKidgv2kCUSabgJcSxCO6ND/Xw6m', NULL, '2025-09-18 14:25:33', 1, 'tenant', NULL, NULL),
-(3, 'Afreen ', 'afreen1@gmail.com', '$2y$10$3UXVsxxSefeYX46L9WSkU.0FXu5NIrmIMcFl6sx.K9ynJkqCo5BXe', NULL, '2025-09-18 14:30:43', 1, 'landlord', NULL, NULL),
-(8, 'Tanvir', 'mrk243719@gmail.com', '$2y$10$AD1Z4Nqu2olw0KTkGbbr0uXkpilcC.rxgyCOMvk7NgW.rOt9.w.nO', NULL, '2025-10-06 07:28:31', 1, 'tenant', '872c5f57590e057ec9cb5226e374845c69a1656c77f27d1eca6a564dd8e3b38403bd9bbe9867952f5317beae835b486b26c4', '2025-10-06 19:35:59');
+(3, 'Afreen ', 'afreen1@gmail.com', '$2y$10$3UXVsxxSefeYX46L9WSkU.0FXu5NIrmIMcFl6sx.K9ynJkqCo5BXe', NULL, '2025-09-18 14:30:43', 1, 'landlord', NULL, NULL);
 
 --
 -- Indexes for dumped tables
@@ -296,6 +323,12 @@ ALTER TABLE `reviews`
   ADD KEY `tenant_id` (`tenant_id`);
 
 --
+-- Indexes for table `roommates`
+--
+ALTER TABLE `roommates`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `users`
 --
 ALTER TABLE `users`
@@ -322,7 +355,7 @@ ALTER TABLE `conversation_participants`
 -- AUTO_INCREMENT for table `favourites`
 --
 ALTER TABLE `favourites`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `messages`
@@ -359,6 +392,12 @@ ALTER TABLE `rental_requests`
 --
 ALTER TABLE `reviews`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT for table `roommates`
+--
+ALTER TABLE `roommates`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `users`
