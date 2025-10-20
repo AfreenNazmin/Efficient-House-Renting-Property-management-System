@@ -7,8 +7,9 @@ if(!isset($_SESSION['username'])){
 
 include 'config.php';
 
-// Fetch landlord's properties
 $landlord = $_SESSION['username'];
+
+// Fetch landlord's properties
 $sql = "SELECT * FROM properties WHERE landlord = ?";
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("s", $landlord);
@@ -45,24 +46,84 @@ $reviews = $stmt3->get_result();
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Landlord Dashboard</title>
 <link rel="stylesheet" href="../css/landlord.css">
+<style>
+.card .btn-edit,
+.card .btn-delete {
+    padding: 8px 16px;
+    border-radius: 5px;
+    font-size: 14px;
+    border: none;
+    cursor: pointer;
+    color: #fff;
+    transition: 0.3s;
+    margin-right: 8px;
+}
+
+.card .btn-edit {
+    background-color: #4CAF50;
+}
+
+.card .btn-edit:hover {
+    background-color: #45a049;
+}
+
+.card .btn-delete {
+    background-color: #f44336;
+}
+
+.card .btn-delete:hover {
+    background-color: #da190b;
+}
+
+.card .btn-edit { text-decoration: none; }
+
+.toast {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    background: #4CAF50;
+    color: #fff;
+    padding: 12px 20px;
+    border-radius: 5px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    z-index: 9999;
+    opacity: 0.95;
+    transition: 0.3s;
+}
+.toast.error { background: #f44336; }
+
+.cards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+.card {
+  width: calc(33.33% - 20px);
+  background: #fff;
+  border-radius: 10px;
+  padding: 15px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+@media (max-width: 900px) {
+  .card { width: calc(50% - 20px); }
+}
+@media (max-width: 600px) {
+  .card { width: 100%; }
+}
+</style>
 </head>
 <body>
 
-<header class="header">
-  <div class="logo">HouseRent</div>
-  <nav class="nav">
-    <a href="index.php">Home</a>
-    <a href="landlord.php" class="active">Dashboard</a>
-    <a href="tenants.php">Tenants</a>
-    <a href="logout.php" onclick="return confirm('Are you really sure you want to logout?');">Logout</a>
-  </nav>
-</header>
+<?php
+$allowed_links = ['Home','About','Contact','Logout'];
+include 'bar.php';
+?>
 
 <div class="dashboard-container">
   <aside class="sidebar">
     <ul>
       <li><a href="#my-properties">My Properties</a></li>
-      <li><a href="#" id="openModal">Add Property</a></li>
+      <li><a href="add_property.php">Add Property</a></li>
       <li><a href="#rentals">Rentals</a></li>
       <li><a href="#messages">Messages</a></li>
       <li><a href="#reviews">Reviews</a></li>
@@ -77,36 +138,21 @@ $reviews = $stmt3->get_result();
       <h2>My Properties</h2>
       <div class="cards">
         <?php while($row = $result->fetch_assoc()): ?>
-          <div class="card">
-            <?php if(!empty($row['image'])): ?>
-              <img src="../<?php echo htmlspecialchars($row['image']); ?>" alt="Property Image">
-            <?php else: ?>
-              <img src="../images/placeholder.jpg" alt="No Image">
-            <?php endif; ?>
+          <div class="card" id="property-<?php echo $row['id']; ?>">
+            <img src="../<?php echo !empty($row['image']) ? htmlspecialchars($row['image']) : 'images/placeholder.jpg'; ?>" alt="Property Image">
             <h3><?php echo htmlspecialchars($row['property_name']); ?></h3>
             <p>Location: <?php echo htmlspecialchars($row['location']); ?></p>
             <p>Rent: $<?php echo htmlspecialchars($row['rent']); ?>/month</p>
             <p>Bedrooms: <?php echo htmlspecialchars($row['bedrooms']); ?></p>
             <p>Type: <?php echo htmlspecialchars($row['property_type']); ?></p>
+            <div class="card-buttons" style="display:flex;">
+              <a href="edit_property.php?id=<?php echo $row['id']; ?>" class="btn-edit">Edit</a>
+              <button onclick="deleteProperty(<?php echo $row['id']; ?>)" class="btn-delete">Delete</button>
+            </div>
           </div>
         <?php endwhile; ?>
       </div>
     </section>
-
-<!-- Add Property Modal -->
-<div id="propertyModal" class="modal">
-  <div class="modal-content">
-    <span class="close">&times;</span>
-    <h2>Add New Property</h2>
-    <form action="../php/add_property.php" method="POST" enctype="multipart/form-data">
-      <input type="text" name="property_name" placeholder="Property Name" required>
-      <input type="text" name="location" placeholder="Location" required>
-      <input type="number" name="rent" placeholder="Rent Amount" required>
-      <input type="file" name="property_image" accept="image/*" required>
-      <button type="submit">Add Property</button>
-    </form>
-  </div>
-</div>
 
     <!-- Rentals Section -->
     <section id="rentals" class="cards-section">
@@ -162,39 +208,45 @@ $reviews = $stmt3->get_result();
         <?php endif; ?>
       </div>
     </section>
-
   </main>
 </div>
 
 <script>
-// Modal JS
+function deleteProperty(id){
+  if(confirm("Really want to delete this property?")){
+    fetch('delete_property.php?id=' + id)
+      .then(res => res.json())
+      .then(data => {
+        if(data.success){
+          const card = document.getElementById('property-' + id);
+          if(card) card.remove();
+          showToast("Property deleted successfully");
+        } else {
+          showToast("Error deleting property", true);
+        }
+      });
+  }
+}
+
+function showToast(message, isError = false){
+  const toast = document.createElement('div');
+  toast.className = 'toast' + (isError ? ' error' : '');
+  toast.innerText = message;
+  document.body.appendChild(toast);
+  setTimeout(() => toast.remove(), 3000);
+}
+
+// Optional modal code - only if modal exists
 const propertyModal = document.getElementById('propertyModal');
-const openModalBtn = document.getElementById('openModal');
-const closeModalBtn = propertyModal.querySelector('.close');
+if(propertyModal){
+  const openModalBtn = document.getElementById('openModal');
+  const closeModalBtn = propertyModal.querySelector('.close');
+  openModalBtn?.addEventListener('click', ()=> propertyModal.style.display='block');
+  closeModalBtn?.addEventListener('click', ()=> propertyModal.style.display='none');
+  window.addEventListener('click', e => { if(e.target==propertyModal) propertyModal.style.display='none'; });
+}
 
-// Open Add Property Modal
-openPropertyBtn.onclick = () => propertyModal.style.display = 'block';
-closePropertyBtn.onclick = () => propertyModal.style.display = 'none';
-
-// Open Edit Property Modal
-editBtns.forEach(btn => {
-    btn.onclick = () => {
-        editModal.style.display = 'block';
-        document.getElementById('edit_id').value = btn.dataset.id;
-        document.getElementById('edit_name').value = btn.dataset.name;
-        document.getElementById('edit_location').value = btn.dataset.location;
-        document.getElementById('edit_rent').value = btn.dataset.rent;
-    }
-});
-closeEditBtn.onclick = () => editModal.style.display = 'none';
-
-// Close modals when clicking outside
-window.onclick = (e) => {
-    if(e.target == propertyModal) propertyModal.style.display = 'none';
-    if(e.target == editModal) editModal.style.display = 'none';
-};
-
-// --- Unread Messages Badge ---
+// Unread Messages Badge
 async function updateUnreadCount() {
     try {
         const resp = await fetch('../php/unread_count.php');
@@ -205,10 +257,10 @@ async function updateUnreadCount() {
         console.error('Error fetching unread messages:', err);
     }
 }
-updateUnreadCount(); // initial call
+updateUnreadCount();
 setInterval(updateUnreadCount, 7000);
 
-// --- Reply Form (optional enhancement) ---
+// Reply Form
 const replyForm = document.getElementById('replyForm');
 if(replyForm){
     replyForm.addEventListener('submit', async (e) => {

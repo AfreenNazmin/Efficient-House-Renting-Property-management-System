@@ -21,9 +21,26 @@
       <div class="signup-container">
         <a href="/project/Efficient-House-Renting-Property-management-System/php/index.php" class="close-btn">&times;</a>
         <h2>Create Account</h2>
-        <form id="signupForm">
+        <form id="signupForm" enctype="multipart/form-data">
           <input type="text" name="name" placeholder="Full Name" required>
           <input type="email" name="email" placeholder="Email" required>
+ <div class="phone-group">
+            <select id="countryCode" name="countryCode">
+              <option value="+1">+1 (US)</option>
+              <option value="+91">+91 (India)</option>
+              <option value="+44">+44 (UK)</option>
+              <option value="+880">+880 (BD)</option>
+            </select>
+            <input type="tel" name="phone" id="phone" placeholder="Enter Your phone number" required>
+          </div>
+          <!-- NID fields (visible only for landlord) -->
+<div id="nidFields" style="display: none;">
+  <input type="text" name="nidNumber" placeholder="Enter NID Number">
+  <label>Upload NID Front:</label>
+  <input type="file" name="nidFront" accept="image/*">
+  <label>Upload NID Back:</label>
+  <input type="file" name="nidBack" accept="image/*">
+</div>
 
           <div class="password-field">
             <input type="password" name="password" id="password" placeholder="Password" required>
@@ -47,18 +64,127 @@
 
         <p class="login-link">Already have an account? <a href="../php/login.php">Log in</a></p>
       </div>
+<div id="recaptcha-container"></div>
+
+<div id="otpSection" style="display: none;">
+  <input type="text" id="otpInput" placeholder="Enter OTP code">
+  <button type="button" onclick="verifyOTP()">Verify OTP</button>
+</div>
+
 
     </div>
+  
+
   </div>
 </div>
+<script type="module">
+  
+  // Import the functions you need from the SDKs
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-app.js";
+  import { getAuth, RecaptchaVerifier, signInWithPhoneNumber, sendEmailVerification, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-auth.js";
+
+  // Your Firebase config
+  const firebaseConfig = {
+    apiKey: "AIzaSyB3iim_58j3U8eesAvhTG23XDMx__CQ694",
+    authDomain: "efficient-house-renting.firebaseapp.com",
+    projectId: "efficient-house-renting",
+    storageBucket: "efficient-house-renting.firebasestorage.app",
+    messagingSenderId: "140800704227",
+    appId: "1:140800704227:web:77b39d71e5c2a879640fd6",
+    measurementId: "G-YGQFW2RKQF"
+  };
+
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+
+  // You can now use `auth` for phone/email OTP verification
+
+ 
+
+const phoneInput = document.getElementById("phone");
+const countryCode = document.getElementById("countryCode");
+
+const fullPhoneNumber = countryCode.value + phoneInput.value;
+
+// Setup reCAPTCHA
+window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
+  size: 'invisible',
+  callback: (response) => {
+    // reCAPTCHA solved — proceed
+    sendOTP();
+  }
+});
+
+function sendOTP() {
+  const phoneNumber = countryCode.value + phoneInput.value; // Ensure phone number is updated
+
+  signInWithPhoneNumber(auth, phoneNumber, window.recaptchaVerifier)
+    .then((confirmationResult) => {
+      window.confirmationResult = confirmationResult;
+      alert("OTP sent! Please check your phone.");
+      document.getElementById("otpSection").style.display = "block"; // Show OTP input
+    })
+    .catch((error) => {
+      console.error(error);
+      alert("Failed to send OTP: " + error.message);
+    });
+}
+
+const otpCode = document.getElementById("otpInput").value;
+
+window.confirmationResult.confirm(otpCode)
+  .then((result) => {
+    const user = result.user;
+    alert("✅ Phone number verified!");
+    // Proceed with signup or redirect
+  })
+  .catch((error) => {
+    alert("❌ Invalid OTP: " + error.message);
+  });
+
+  function verifyOTP() {
+  const otpCode = document.getElementById("otpInput").value;
+
+  if (window.confirmationResult) {
+    window.confirmationResult.confirm(otpCode)
+      .then((result) => {
+        alert("✅ Phone number verified!");
+      })
+      .catch((error) => {
+        alert("❌ Invalid OTP: " + error.message);
+      });
+  } else {
+    alert("❌ OTP not sent or expired. Please try again.");
+  }
+}
+
+</script>
 
 <script>
   // Role selection
   function setRole(role) {
-    document.getElementById("roleInput").value = role;
-    document.getElementById("tenantBtn").classList.toggle("active", role === "tenant");
-    document.getElementById("landlordBtn").classList.toggle("active", role === "landlord");
+  document.getElementById("roleInput").value = role;
+  document.getElementById("tenantBtn").classList.toggle("active", role === "tenant");
+  document.getElementById("landlordBtn").classList.toggle("active", role === "landlord");
+
+  // Show NID fields only if landlord
+  const nidFields = document.getElementById("nidFields");
+  if (role === "landlord") {
+    nidFields.style.display = "block";
+    // Make NID fields required for landlord
+    nidFields.querySelector('input[name="nidNumber"]').required = true;
+    nidFields.querySelector('input[name="nidFront"]').required = true;
+    nidFields.querySelector('input[name="nidBack"]').required = true;
+  } else {
+    nidFields.style.display = "none";
+    // Remove required for tenants
+    nidFields.querySelector('input[name="nidNumber"]').required = false;
+    nidFields.querySelector('input[name="nidFront"]').required = false;
+    nidFields.querySelector('input[name="nidBack"]').required = false;
   }
+}
+
 
   // Toggle password visibility
   function togglePassword(fieldId) {
@@ -79,8 +205,10 @@
     }
 
     const formData = new FormData(signupForm);
-    const res = await fetch("../php/signup.php", { method: "POST", body: formData });
-    const data = await res.json();
+   const res = await fetch("../php/signup.php", { method: "POST", body: formData });
+const data = await res.json();  // This line will throw if response is not valid JSON.
+console.log(data);  // Check what's actually coming back from the server.
+
 
     if (data.status === "success") {
       alert("✅ Signup successful! Please check your email for a verification link.");
@@ -88,6 +216,9 @@
       alert(data.message);
     }
   });
+
+  
+
 </script>
 
 </body>

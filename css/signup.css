@@ -136,6 +136,91 @@ body {
   color: #bbb;
 }
 
+.phone-group {
+  display: flex;
+  gap: 10px; /* space between select and input */
+  margin: 10px 0;
+}
+
+.phone-group select,
+.phone-group input[type="tel"] {
+  padding: 12px 14px;
+  border: none;
+  border-radius: 8px;
+  background: #2a2a2a;
+  color: #fff;
+  font-size: 15px;
+  outline: none;
+}
+
+/* Make select width smaller than input */
+.phone-group select {
+  flex: 0 0 100px; /* fixed width for country code */
+  cursor: pointer;
+}
+
+/* Make input take the remaining space */
+.phone-group input[type="tel"] {
+  flex: 1;
+}
+
+/* Placeholder color for phone input */
+.phone-group input[type="tel"]::placeholder {
+  color: #bbb;
+}
+
+/* Optional: Hover and focus effects */
+.phone-group select:hover,
+.phone-group input[type="tel"]:hover,
+.phone-group select:focus,
+.phone-group input[type="tel"]:focus {
+  background: #3a3a3a;
+}
+
+/*image*/
+/* NID Fields */
+#nidFields {
+  margin: 10px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+#nidFields input[type="text"],
+#nidFields input[type="file"] {
+  width: 100%;
+  padding: 12px 14px;
+  border: none;
+  border-radius: 8px;
+  background: #2a2a2a;
+  color: #fff;
+  font-size: 15px;
+}
+
+/* Placeholder for NID number */
+#nidFields input[type="text"]::placeholder {
+  color: #bbb;
+}
+
+/* File input label styling */
+#nidFields label {
+  color: #fff;
+  font-size: 14px;
+  margin-bottom: 4px;
+  text-align: left;
+}
+
+/* Hover & focus effect for inputs */
+#nidFields input[type="text"]:hover,
+#nidFields input[type="text"]:focus,
+#nidFields input[type="file"]:hover,
+#nidFields input[type="file"]:focus {
+  background: #3a3a3a;
+  outline: none;
+  cursor: pointer;
+}
+
+
 /* Checkbox */
 .checkbox {
   display: flex;
