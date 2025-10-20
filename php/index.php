@@ -11,6 +11,9 @@ include 'property_card.php';
   <title>Find Your Perfect Home</title>
   <link rel="stylesheet" href="../css/style.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 </head>
 <body>
   <!-- Menu container signup and ham-->
@@ -235,6 +238,99 @@ if (isset($_SESSION['user_id'])) {
         suggestionsBox.style.display = 'none';
       }
     });
+
+   <!-- 🏡 Dynamic New Property Notification -->
+
+(function(){
+    // Configure toastr
+    toastr.options = {
+        "positionClass": "toast-top-right",
+        "timeOut": "7000",
+        "closeButton": true,
+        "progressBar": true,
+        "newestOnTop": true,
+        "preventDuplicates": true
+    };
+
+    // Escape HTML safely
+    function esc(str){ return $('<div/>').text(str).html(); }
+
+    // Some fun & clickbait-style message templates 😎
+    const messages = [
+        "🏡 Hot listing! You might love <b>{name}</b> — check it out 🔥",
+        "✨ Just listed: <b>{name}</b> — don’t miss this gem!",
+        "🌆 New arrival! Explore <b>{name}</b> — perfect for your next move!",
+        "🔥 Trending now: <b>{name}</b> just hit the market!",
+        "💫 Fresh drop! <b>{name}</b> is waiting for you 🏠",
+        "🏠 Love at first sight? Discover <b>{name}</b> now!",
+        "🌸 New property alert — <b>{name}</b> might be your dream home!"
+    ];
+
+    // Get last check timestamp
+    let lastCheck = localStorage.getItem('lastTenantCheck') || '1970-01-01 00:00:00';
+
+    // Initialize last check to newest property timestamp (first page load)
+    function initLastCheck(){
+        $.getJSON('fetch_new_properties.php', { lastCheck: '1970-01-01 00:00:00', limit: 1 }, function(data){
+            if(data && data.length){
+                localStorage.setItem('lastTenantCheck', data[0].created_at);
+                lastCheck = data[0].created_at;
+            } else {
+                const now = new Date();
+                const pad = n => n<10 ? '0'+n : n;
+                const ts = now.getFullYear()+'-'+pad(now.getMonth()+1)+'-'+pad(now.getDate())+' '+
+                           pad(now.getHours())+':'+pad(now.getMinutes())+':'+pad(now.getSeconds());
+                localStorage.setItem('lastTenantCheck', ts);
+                lastCheck = ts;
+            }
+        });
+    }
+    initLastCheck();
+
+    // Function to fetch & show new properties
+    function checkNew(){
+        $.getJSON('fetch_new_properties.php', { lastCheck: lastCheck }, function(data){
+            if(!data || data.length === 0) return;
+
+            data.forEach(function(p){
+                const name = esc(p.property_name);
+                const desc = p.description ? esc(p.description.substring(0, 70)) : '';
+                const thumb = p.thumbnail ? p.thumbnail : 'assets/default_thumb.png';
+
+                // Random clickbait message
+                const msgTemplate = messages[Math.floor(Math.random() * messages.length)];
+                const message = msgTemplate.replace('{name}', name);
+
+                const html = `
+                    <div style="display:flex;align-items:center;gap:10px;">
+                        <img src="${thumb}" 
+                             style="width:55px;height:55px;object-fit:cover;border-radius:8px;">
+                        <div style="line-height:1.2;">
+                            ${message}
+                            <div style="font-size:12px;color:#666;">${desc}</div>
+                        </div>
+                    </div>
+                `;
+
+                toastr.info(html, '', {
+                    onclick: function(){
+                        window.location.href = 'property_view.php?id=' + encodeURIComponent(p.id);
+                    }
+                });
+            });
+
+            // Update last check time to newest property
+            lastCheck = data[0].created_at;
+            localStorage.setItem('lastTenantCheck', lastCheck);
+        }).fail(()=> console.warn('❌ Failed to check new properties'));
+    }
+
+    // Poll every 15 seconds
+    setInterval(checkNew, 15000);
+    window.addEventListener('focus', checkNew);
+})();
+
+
   </script>
 </body>
 </html>

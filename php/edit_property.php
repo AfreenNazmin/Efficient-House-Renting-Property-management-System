@@ -7,95 +7,140 @@ if(!isset($_SESSION['username'])){
 
 include 'config.php';
 
+$landlord = $_SESSION['username'];
+$property = null;
+
+// Fetch property data if id is provided
 if(isset($_GET['id'])){
     $id = $_GET['id'];
     $sql = "SELECT * FROM properties WHERE id=? AND landlord=?";
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("is", $id, $_SESSION['username']);
+    $stmt->bind_param("is", $id, $landlord);
     $stmt->execute();
     $property = $stmt->get_result()->fetch_assoc();
+
+    // Fetch rent settings
+    $sql2 = "SELECT * FROM rent_settings WHERE property_id=?";
+    $stmt2 = $conn->prepare($sql2);
+    $stmt2->bind_param("i", $id);
+    $stmt2->execute();
+    $rent_settings = $stmt2->get_result()->fetch_assoc();
+
+    // Fetch gallery images
+    $sql3 = "SELECT * FROM property_gallery WHERE property_id=?";
+    $stmt3 = $conn->prepare($sql3);
+    $stmt3->bind_param("i", $id);
+    $stmt3->execute();
+    $gallery = $stmt3->get_result()->fetch_all(MYSQLI_ASSOC);
 }
 
 if($_SERVER['REQUEST_METHOD'] === 'POST'){
     $id = $_POST['property_id'];
-    $landlord = $_SESSION['username'];
 
     // Collect fields
-    $name = $_POST['property_name'];
+    $property_name = $_POST['property_name'];
     $location = $_POST['location'];
     $rent = $_POST['rent'];
     $bedrooms = $_POST['bedrooms'] ?? 1;
-    $property_type = $_POST['property_type'] ?? 'Apartment';
-    $description = $_POST['description'] ?? null;
     $bathrooms = $_POST['bathrooms'] ?? 1;
     $size = $_POST['size'] ?? null;
     $floor = $_POST['floor'] ?? null;
-    $parking = isset($_POST['parking']) ? 1 : 0;
-    $furnished = isset($_POST['furnished']) ? 1 : 0;
+    $property_type = $_POST['property_type'] ?? 'Apartment';
+    $rental_type = isset($_POST['rental_type']) ? implode(',', $_POST['rental_type']) : 'both';
+    $description = $_POST['description'] ?? null;
+    $status = $_POST['status'] ?? 'Rent';
+    $map_embed = $_POST['map_embed'] ?? null;
+    $latitude = $_POST['latitude'] ?? null;
+    $longitude = $_POST['longitude'] ?? null;
     $available = isset($_POST['available']) ? 1 : 0;
     $featured = isset($_POST['featured']) ? 1 : 0;
-    $map_embed = $_POST['map_embed'] ?? null;
+    $parking = isset($_POST['parking']) ? 1 : 0;
+    $furnished = isset($_POST['furnished']) ? 1 : 0;
 
-    // Handle remove image
-    if(isset($_POST['remove_image']) && $_POST['remove_image'] == 1){
-        if(!empty($property['image']) && file_exists('../'.$property['image'])){
-            unlink('../'.$property['image']);
-        }
-        $image_path = null;
-    }
+    // Rent settings
+    $include_electricity = isset($_POST['include_electricity']) ? 1 : 0;
+    $electricity_bill = $_POST['electricity_bill'] ?? 0;
+    $include_water = isset($_POST['include_water']) ? 1 : 0;
+    $water_bill = $_POST['water_bill'] ?? 0;
+    $include_gas = isset($_POST['include_gas']) ? 1 : 0;
+    $gas_bill = $_POST['gas_bill'] ?? 0;
+    $include_service = isset($_POST['include_service']) ? 1 : 0;
+    $service_charge = $_POST['service_charge'] ?? 0;
+    $include_other = isset($_POST['include_other']) ? 1 : 0;
+    $other_charges = $_POST['other_charges'] ?? 0;
 
     // Handle main image
-    $image_path = $image_path ?? null;
+    if(isset($_POST['remove_image']) && $_POST['remove_image'] == 1 && !empty($property['image'])){
+        unlink('../'.$property['image']);
+        $image_path = null;
+    } else {
+        $image_path = $property['image'] ?? null;
+    }
     if(isset($_FILES['property_image']) && $_FILES['property_image']['error'] == 0){
-        $img_name = time() . '_' . basename($_FILES['property_image']['name']);
-        $img_folder = '../uploads/' . $img_name;
+        $img_name = time().'_'.basename($_FILES['property_image']['name']);
+        $img_folder = '../uploads/'.$img_name;
         if(move_uploaded_file($_FILES['property_image']['tmp_name'], $img_folder)){
-            $image_path = 'uploads/' . $img_name;
+            $image_path = 'uploads/'.$img_name;
         }
     }
 
     // Handle floor plan
-    $floor_plan_path = null;
+    $floor_plan_path = $property['floor_plan'] ?? null;
     if(isset($_FILES['floor_plan']) && $_FILES['floor_plan']['error'] == 0){
-        $fp_name = time() . '_' . basename($_FILES['floor_plan']['name']);
-        $fp_folder = '../uploads/' . $fp_name;
+        $fp_name = time().'_'.basename($_FILES['floor_plan']['name']);
+        $fp_folder = '../uploads/'.$fp_name;
         if(move_uploaded_file($_FILES['floor_plan']['tmp_name'], $fp_folder)){
-            $floor_plan_path = 'uploads/' . $fp_name;
+            $floor_plan_path = 'uploads/'.$fp_name;
         }
     }
 
-    // Build SQL dynamically
-    $fields = "property_name=?, location=?, rent=?, bedrooms=?, property_type=?, description=?, available=?, featured=?, size=?, bathrooms=?, floor=?, parking=?, furnished=?, map_embed=?";
-    $types = "ssisssiiisiiss";
-    $params = [$name, $location, $rent, $bedrooms, $property_type, $description, $available, $featured, $size, $bathrooms, $floor, $parking, $furnished, $map_embed];
-
-    if($image_path){
-        $fields .= ", image=?";
-        $types .= "s";
-        $params[] = $image_path;
-    }
-    if($floor_plan_path){
-        $fields .= ", floor_plan=?";
-        $types .= "s";
-        $params[] = $floor_plan_path;
-    }
-
-    $sql = "UPDATE properties SET $fields WHERE id=? AND landlord=?";
-    $types .= "is";
-    $params[] = $id;
-    $params[] = $landlord;
-
+    // Update property
+    $sql = "UPDATE properties SET
+        property_name=?, location=?, rent=?, bedrooms=?, bathrooms=?, size=?,
+        floor=?, property_type=?, description=?, available=?, featured=?,
+        parking=?, furnished=?, map_embed=?, image=?, floor_plan=?, status=?, rental_type=?, latitude=?, longitude=?
+        WHERE id=? AND landlord=?";
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param($types, ...$params);
+    $stmt->bind_param("ssiiissssiiiiissssdi", 
+        $property_name, $location, $rent, $bedrooms, $bathrooms, $size,
+        $floor, $property_type, $description, $available, $featured,
+        $parking, $furnished, $map_embed, $image_path, $floor_plan_path, $status, $rental_type, $latitude, $longitude,
+        $id, $landlord
+    );
+    $stmt->execute();
 
-    if($stmt->execute()){
-        header("Location: landlord.php");
-        exit();
-    } else {
-        echo "Error: " . $stmt->error;
+    // Update rent settings
+    $sql2 = "UPDATE rent_settings SET
+        base_rent=?, include_electricity=?, electricity_bill=?, include_water=?, water_bill=?,
+        include_gas=?, gas_bill=?, include_service=?, service_charge=?, include_other=?, other_charges=?
+        WHERE property_id=?";
+    $stmt2 = $conn->prepare($sql2);
+    $stmt2->bind_param("didididididi",
+        $rent, $include_electricity, $electricity_bill, $include_water, $water_bill,
+        $include_gas, $gas_bill, $include_service, $service_charge, $include_other, $other_charges, $id
+    );
+    $stmt2->execute();
+
+    // Handle multiple gallery images
+    if(isset($_FILES['property_images'])){
+        foreach($_FILES['property_images']['tmp_name'] as $key => $tmp_name){
+            if($_FILES['property_images']['error'][$key] == 0){
+                $img_name = time().'_'.basename($_FILES['property_images']['name'][$key]);
+                $img_folder = '../uploads/'.$img_name;
+                move_uploaded_file($tmp_name, $img_folder);
+                $sql3 = "INSERT INTO property_gallery (property_id, image) VALUES (?, ?)";
+                $stmt3 = $conn->prepare($sql3);
+                $stmt3->bind_param("is", $id, $img_name);
+                $stmt3->execute();
+            }
+        }
     }
+
+    header("Location: landlord.php");
+    exit();
 }
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
