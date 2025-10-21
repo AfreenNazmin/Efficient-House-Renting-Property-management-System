@@ -12,7 +12,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $location = $_POST['location'] ?? '';
     $rent = $_POST['rent'] ?? 0;
     $property_type = $_POST['property_type'] ?? 'Apartment';
-    $rental_type = isset($_POST['rental_type']) ? implode(',', $_POST['rental_type']) : 'both';
+  if (isset($_POST['rental_type']) && is_array($_POST['rental_type'])) {
+    $selected_types = $_POST['rental_type'];
+
+    // If more than one selected → store as "all"
+    $rental_type = (count($selected_types) > 1) ? 'all' : $selected_types[0];
+} else {
+    $rental_type = $_POST['rental_type'] ?? 'family';
+}
     $bedrooms = $_POST['bedrooms'] ?? 1;
     $bathrooms = $_POST['bathrooms'] ?? 1;
     $size = $_POST['size'] ?? NULL;

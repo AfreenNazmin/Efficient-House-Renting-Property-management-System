@@ -64,7 +64,7 @@
 
         <p class="login-link">Already have an account? <a href="../php/login.php">Log in</a></p>
       </div>
-<div id="recaptcha-container"></div>
+
 
 <div id="otpSection" style="display: none;">
   <input type="text" id="otpInput" placeholder="Enter OTP code">
@@ -77,89 +77,6 @@
 
   </div>
 </div>
-<script type="module">
-  
-  // Import the functions you need from the SDKs
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-app.js";
-  import { getAuth, RecaptchaVerifier, signInWithPhoneNumber, sendEmailVerification, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-auth.js";
-
-  // Your Firebase config
-  const firebaseConfig = {
-    apiKey: "AIzaSyB3iim_58j3U8eesAvhTG23XDMx__CQ694",
-    authDomain: "efficient-house-renting.firebaseapp.com",
-    projectId: "efficient-house-renting",
-    storageBucket: "efficient-house-renting.firebasestorage.app",
-    messagingSenderId: "140800704227",
-    appId: "1:140800704227:web:77b39d71e5c2a879640fd6",
-    measurementId: "G-YGQFW2RKQF"
-  };
-
-  // Initialize Firebase
-  const app = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
-
-  // You can now use `auth` for phone/email OTP verification
-
- 
-
-const phoneInput = document.getElementById("phone");
-const countryCode = document.getElementById("countryCode");
-
-const fullPhoneNumber = countryCode.value + phoneInput.value;
-
-// Setup reCAPTCHA
-window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
-  size: 'invisible',
-  callback: (response) => {
-    // reCAPTCHA solved — proceed
-    sendOTP();
-  }
-});
-
-function sendOTP() {
-  const phoneNumber = countryCode.value + phoneInput.value; // Ensure phone number is updated
-
-  signInWithPhoneNumber(auth, phoneNumber, window.recaptchaVerifier)
-    .then((confirmationResult) => {
-      window.confirmationResult = confirmationResult;
-      alert("OTP sent! Please check your phone.");
-      document.getElementById("otpSection").style.display = "block"; // Show OTP input
-    })
-    .catch((error) => {
-      console.error(error);
-      alert("Failed to send OTP: " + error.message);
-    });
-}
-
-const otpCode = document.getElementById("otpInput").value;
-
-window.confirmationResult.confirm(otpCode)
-  .then((result) => {
-    const user = result.user;
-    alert("✅ Phone number verified!");
-    // Proceed with signup or redirect
-  })
-  .catch((error) => {
-    alert("❌ Invalid OTP: " + error.message);
-  });
-
-  function verifyOTP() {
-  const otpCode = document.getElementById("otpInput").value;
-
-  if (window.confirmationResult) {
-    window.confirmationResult.confirm(otpCode)
-      .then((result) => {
-        alert("✅ Phone number verified!");
-      })
-      .catch((error) => {
-        alert("❌ Invalid OTP: " + error.message);
-      });
-  } else {
-    alert("❌ OTP not sent or expired. Please try again.");
-  }
-}
-
-</script>
 
 <script>
   // Role selection
@@ -193,29 +110,41 @@ window.confirmationResult.confirm(otpCode)
   }
 
   // Signup form submit
-  const signupForm = document.getElementById('signupForm');
-  signupForm.addEventListener('submit', async e => {
-    e.preventDefault();
+ const signupForm = document.getElementById('signupForm');
+signupForm.addEventListener('submit', async e => {
+  e.preventDefault();
 
-    const password = document.getElementById('password').value;
-    const confirmPassword = document.getElementById('confirmPassword').value;
-    if (password !== confirmPassword) {
-      alert("Passwords do not match!");
-      return;
-    }
+  const role = document.getElementById('roleInput').value;
+  if(role !== 'tenant') return; // landlord will handle later
 
-    const formData = new FormData(signupForm);
-   const res = await fetch("../php/signup.php", { method: "POST", body: formData });
-const data = await res.json();  // This line will throw if response is not valid JSON.
-console.log(data);  // Check what's actually coming back from the server.
+  const formData = new FormData(signupForm);
 
+  // Send signup -> generate OTP
+  const res = await fetch("../php/send_otp.php", { method: "POST", body: formData });
+  const data = await res.json();
+  alert(data.message);
 
-    if (data.status === "success") {
-      alert("✅ Signup successful! Please check your email for a verification link.");
-    } else {
-      alert(data.message);
-    }
+  if(data.status === 'success'){
+    document.getElementById('otpSection').style.display = 'block';
+  }
+});
+
+async function verifyOTP(){
+  const otp = document.getElementById('otpInput').value;
+  const phone = document.getElementById('phone').value;
+
+  const res = await fetch('../php/verify_otp.php',{
+    method:'POST',
+    headers:{'Content-Type':'application/x-www-form-urlencoded'},
+    body:`phone=${phone}&otp=${otp}`
   });
+  const data = await res.json();
+  alert(data.message);
+
+  if(data.status === 'success'){
+    window.location.href = '../php/login.php';
+  }
+}
 
   
 

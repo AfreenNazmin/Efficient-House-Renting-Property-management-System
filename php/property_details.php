@@ -183,6 +183,11 @@ $property = $result->fetch_assoc();
   <?php endif; ?>
 
  <a href="rentcalculator.php?id=<?php echo $property['id']; ?>" style="text-decoration:none">View Your Total Rent!</a>
+<?php if (in_array(strtolower($property['rental_type']), ['bachelor', 'roommate', 'all'])): ?>
+  <a href="roommate _search.php?property_id=<?php echo $property['id']; ?>">
+    <button class="rent-btn"><i class="fa-solid fa-user-group"></i> Find Roommate</button>
+  </a>
+<?php endif; ?>
 
 </div>
 
