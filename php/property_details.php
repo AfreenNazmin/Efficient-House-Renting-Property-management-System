@@ -27,6 +27,39 @@ $property = $result->fetch_assoc();
 <title><?php echo htmlspecialchars($property['property_name']); ?></title>
 <link rel="stylesheet" href="../css/property_details.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<style>
+
+.pending-requests {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: rgba(240, 240, 240, 0.25);
+  color: #444;
+  border: 1px solid rgba(180, 180, 180, 0.3);
+  border-radius: 25px;
+  padding: 8px 16px;
+  width: fit-content;
+  margin: 15px auto 0;
+  font-size: 15px;
+  font-weight: 500;
+  backdrop-filter: blur(6px);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+.pending-requests i {
+  color: #777;
+  animation: rotateClock 2s linear infinite;
+}
+
+@keyframes rotateClock {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+  </style>
+
 </head>
 <body>
 <div class="detcon">
@@ -49,43 +82,73 @@ $property = $result->fetch_assoc();
     <!-- Rental Form -->
     <div id="rentalForm" style="display:none;">
       <h3>Rental Application Form</h3>
-      <form action="submit_rental.php" method="POST">
-        <input type="hidden" name="property_id" value="<?php echo $property['id']; ?>">
-        <input type="hidden" name="property_name" value="<?php echo htmlspecialchars($property['property_name']); ?>">
+     <form action="submit_rental.php" method="POST" enctype="multipart/form-data">
+    <input type="hidden" name="property_id" value="<?php echo $property['id']; ?>">
+    <input type="hidden" name="property_name" value="<?php echo htmlspecialchars($property['property_name']); ?>">
 
-        <label for="tenant_name">Full Name</label>
-        <input type="text" name="tenant_name" required>
+    <label for="tenant_name">Full Name</label>
+    <input type="text" name="tenant_name" required>
 
-        <label for="tenant_email">Email</label>
-        <input type="email" name="tenant_email" required>
+    <label for="tenant_email">Email</label>
+    <input type="email" name="tenant_email" required>
 
-        <label for="tenant_phone">Phone</label>
-        <input type="tel" name="tenant_phone" required>
+    <label for="national_id">National ID</label>
+    <input type="text" name="national_id" required>
 
-        <label for="move_in_date">Desired Move-in Date</label>
-        <input type="date" name="move_in_date" required>
+    <label for="tenant_phone">Phone</label>
+    <input type="tel" name="tenant_phone" required>
 
-        <label for="rental_period">Rental Period (months)</label>
-        <input type="number" name="rental_period" required min="1">
+    <label for="current_address">Current Address</label>
+    <textarea name="current_address" rows="2"></textarea>
 
-        <label for="payment_method">Payment Method</label>
-        <select name="payment_method">
-          <option value="bank_transfer">Bank Transfer</option>
-          <option value="cash">Cash</option>
-          <option value="mobile_payment">Mobile Payment</option>
-        </select>
+    <label for="emergency_contact">Emergency Contact</label>
+    <input type="text" name="emergency_contact" required>
 
-        <label>
-          <input type="checkbox" name="terms" required> I agree to the <a href="terms.html" target="_blank">terms and conditions</a>.
-        </label>
+    <label for="notes">Notes</label>
+    <textarea name="notes" rows="2"></textarea>
 
-        <button type="submit" class="rent-btn"><i class="fa-solid fa-paper-plane"></i> Submit Rental Request</button>
-      </form>
+    <label for="move_in_date">Desired Move-in Date</label>
+    <input type="date" name="move_in_date" min="<?php echo date('Y-m-d', strtotime('+1 day')); ?>" required>
+
+
+    <label for="payment_method">Payment Method</label>
+    <select name="payment_method">
+        <option value="bank_transfer">Bank Transfer</option>
+        <option value="cash">Cash</option>
+        <option value="mobile_payment">Mobile Payment</option>
+    </select>
+
+    <label for="pdf_file">Upload PDF</label>
+    <input type="file" name="pdf_file" accept="application/pdf" required>
+
+    <label>
+        <input type="checkbox" name="terms" required> I agree to <a href="terms.html" target="_blank">terms and conditions</a>
+    </label>
+
+    <button type="submit" class="rent-btn">
+        <i class="fa-solid fa-paper-plane"></i> Submit Rental Request
+    </button>
+</form>
+
     </div>
   </div>
 
+
   <!-- Property Info Grid -->
   <div class="details-grid">
+<div class="pending-requests">
+  <i class="fa-regular fa-clock"></i>
+  <?php
+  $pid = $property['id'];
+  $q = $conn->prepare("SELECT COUNT(*) AS c FROM rental_requests WHERE property_id=? AND status='pending'");
+  $q->bind_param("i", $pid);
+  $q->execute();
+  $pending = $q->get_result()->fetch_assoc()['c'];
+  echo "<span>$pending Pending Requests</span>";
+  ?>
+</div>
+
+
     <p><i class="fa-solid fa-location-dot"></i> <strong>Location:</strong> <?php echo htmlspecialchars($property['location']); ?></p>
     <p><i class="fa-solid fa-user"></i> <strong>Landlord:</strong> <?php echo htmlspecialchars($property['landlord']); ?></p>
     <p><i class="fa-solid fa-bed"></i> <strong>Bedrooms:</strong> <?php echo htmlspecialchars($property['bedrooms']); ?></p>
