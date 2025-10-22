@@ -275,3 +275,16 @@ body {
   text-decoration: underline;
 }
 
+.otp-message {
+    background-color: #333;   /* dark gray */
+    color: #fff;              /* white text */
+    padding: 10px 15px;
+    border-radius: 5px;
+    margin-top: 10px;
+    max-width: 300px;
+    text-align: center;
+    font-weight: bold;
+}
+.otp-message.success { background-color: #28a745; }  /* green */
+.otp-message.error { background-color: #dc3545; }    /* red */
+

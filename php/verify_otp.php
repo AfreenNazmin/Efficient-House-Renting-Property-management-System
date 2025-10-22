@@ -1,32 +1,61 @@
 <?php
-session_start();
+header('Content-Type: application/json');
 include 'config.php';
 
-if($_SERVER['REQUEST_METHOD'] === 'POST'){
-    $phone = preg_replace('/\D/', '', $_POST['phone']);
-    $otp = $_POST['otp'];
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    echo json_encode(['status'=>'error','message'=>'Invalid request']); exit;
+}
 
-    $stmt = $conn->prepare("SELECT * FROM pending_users WHERE phone=? AND otp=?");
-    $stmt->bind_param("ss", $phone,$otp);
-    $stmt->execute();
-    $result = $stmt->get_result();
+$phone = trim($_POST['phone'] ?? '');
+$otp   = trim($_POST['otp'] ?? '');
+$phone = preg_replace('/[^\d\+]/','', $phone); // keep digits + plus
 
-    if($result->num_rows > 0){
-        $user = $result->fetch_assoc();
 
-        // Insert into users table
-        $stmt2 = $conn->prepare("INSERT INTO users (name,email,phone,password,role,email_verified,phone_verified) VALUES (?,?,?,?,?,0,1)");
-        $stmt2->bind_param("sssss",$user['name'],$user['email'],$user['phone'],$user['password'],$user['role']);
-        $stmt2->execute();
+// Log incoming values
+file_put_contents(__DIR__.'/otp-debug.log', date('c')." Incoming OTP: $otp, Phone: $phone\n", FILE_APPEND);
 
-        // Delete from pending_users
-        $stmt3 = $conn->prepare("DELETE FROM pending_users WHERE id=?");
-        $stmt3->bind_param("i",$user['id']);
-        $stmt3->execute();
+// Normalize phone (keep + and digits only)
+$phone = preg_replace('/[^\d\+]/','', $phone);
 
-        echo json_encode(['status'=>'success','message'=>'Phone verified! Signup complete.']);
-    }else{
-        echo json_encode(['status'=>'error','message'=>'Invalid OTP.']);
-    }
+
+if (!$phone || !$otp) {
+    echo json_encode(['status'=>'error','message'=>'Missing phone or OTP']); exit;
+}
+
+// Check OTP validity
+$stmt = $conn->prepare("SELECT * FROM pending_users WHERE phone=? AND otp=? AND otp_expires_at > NOW()");
+$stmt->bind_param('ss', $phone, $otp);
+$stmt->execute();
+$res = $stmt->get_result();
+
+
+file_put_contents(__DIR__.'/otp-debug.log', date('c')." Rows matched: ".$res->num_rows."\n", FILE_APPEND);
+
+
+if ($res->num_rows !== 1) {
+    echo json_encode(['status'=>'error','message'=>'Invalid or expired OTP']); exit;
+}
+
+$user = $res->fetch_assoc();
+
+if ($user['role'] === 'landlord') {
+    // Mark phone verified, wait for admin approval
+    $upd = $conn->prepare("UPDATE pending_users SET phoneVerified=1 WHERE phone=?");
+    $upd->bind_param('s', $phone);
+    $upd->execute();
+    echo json_encode(['status'=>'success','message'=>'Phone verified! Your landlord request is sent to admin.']);
+    exit;
+}
+
+// Tenant → move to users
+$ins = $conn->prepare("INSERT INTO users (name,email,password,role,phone) VALUES (?,?,?,?,?)");
+$ins->bind_param('sssss', $user['name'], $user['email'], $user['password'], $user['role'], $user['phone']);
+if ($ins->execute()) {
+    $del = $conn->prepare("DELETE FROM pending_users WHERE id=?");
+    $del->bind_param('i', $user['id']);
+    $del->execute();
+    echo json_encode(['status'=>'success','message'=>'Account verified successfully!']);
+} else {
+    echo json_encode(['status'=>'error','message'=>'Failed to create user: '.$conn->error]);
 }
 ?>

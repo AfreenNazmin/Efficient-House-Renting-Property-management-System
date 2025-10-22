@@ -1,15 +1,11 @@
 <?php
-// Turn off errors to prevent JSON parse issues
+// Disable display of errors for clean JSON
 ini_set('display_errors', 0);
 error_reporting(0);
 
-// Ensure JSON output
 header('Content-Type: application/json');
-
-// Start buffer to catch accidental output
 ob_start();
 
-require '../vendor/autoload.php';
 include 'config.php';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -21,9 +17,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $phone         = trim($_POST['phone']);
 
     // Optional landlord-only fields
-    $nidNumber = isset($_POST['nidNumber']) ? trim($_POST['nidNumber']) : null;
-    $nidFront  = isset($_FILES['nidFront']) ? $_FILES['nidFront'] : null;
-    $nidBack   = isset($_FILES['nidBack']) ? $_FILES['nidBack'] : null;
+    $nidNumber = $_POST['nidNumber'] ?? null;
 
     // Validate email
     if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
@@ -44,77 +38,40 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         exit;
     }
 
-    // Generate unique token
-    $token = bin2hex(random_bytes(16));
+    // Generate OTP (6-digit)
+    $otp = rand(100000, 999999);
 
-    // Handle NID uploads (only for landlord)
-    $nidFrontPath = null;
-    $nidBackPath  = null;
-
-    if ($role === 'landlord') {
-        $uploadDir = "../uploads/nid/";
-        if (!is_dir($uploadDir)) mkdir($uploadDir, 0777, true);
-
-        if ($nidFront && $nidFront['error'] === 0) {
-            $ext = pathinfo($nidFront['name'], PATHINFO_EXTENSION);
-            $nidFrontPath = $uploadDir . uniqid("front_") . "." . $ext;
-            move_uploaded_file($nidFront['tmp_name'], $nidFrontPath);
-        }
-
-        if ($nidBack && $nidBack['error'] === 0) {
-            $ext = pathinfo($nidBack['name'], PATHINFO_EXTENSION);
-            $nidBackPath = $uploadDir . uniqid("back_") . "." . $ext;
-            move_uploaded_file($nidBack['tmp_name'], $nidBackPath);
-        }
-    }
-
-    // Insert into pending_users
+    // Save user temporarily
     $stmt = $conn->prepare("
         INSERT INTO pending_users 
-        (name, email, password, role, country_code, phone, nid_number, nid_front, nid_back, verification_token)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-    $stmt->bind_param("ssssssssss", 
-        $name, $email, $password, $role, $country_code, $phone,
-        $nidNumber, $nidFrontPath, $nidBackPath, $token
+        (name, email, password, role, country_code, phone, nid_number, otp, otp_expires_at)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, DATE_ADD(NOW(), INTERVAL 10 MINUTE))
+    ");
+    $stmt->bind_param("sssssssi", 
+        $name, $email, $password, $role, $country_code, $phone, $nidNumber, $otp
     );
 
     if ($stmt->execute()) {
-        // Send verification email
-        $mail = new PHPMailer(true);
-        try {
-            $mail->isSMTP();
-            $mail->Host = 'smtp.gmail.com';
-            $mail->SMTPAuth = true;
-            $mail->Username = 'rentify.smtp@gmail.com';
-            $mail->Password = 'smud otml tuix epmw'; // Gmail app password
-            $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
-            $mail->Port = 587;
 
-            $mail->setFrom('rentify.smtp@gmail.com', 'Rentify');
-            $mail->addAddress($email, $name);
+        // Send OTP using sms.net.bd API
+        $api_key = "YOUR_SMS_NET_BD_API_KEY"; // replace this
+        $senderid = "YOUR_SENDER_ID";          // replace this
+        $message = "Your Rentify OTP is: $otp. It will expire in 10 minutes.";
 
-            $verify_link = "http://localhost/project/Efficient-House-Renting-Property-management-System/php/verify.php?token=" . urlencode($token);
+        $url = "https://sms.net.bd/smsapi?api_key=" . urlencode($api_key) . 
+               "&type=text&number=" . urlencode($phone) . 
+               "&senderid=" . urlencode($senderid) . 
+               "&message=" . urlencode($message);
 
-            $mail->isHTML(true);
-            $mail->Subject = "Verify your Rentify account";
-            $mail->Body = "
-                <h3>Hello, $name 👋</h3>
-                <p>Thanks for signing up as a <b>$role</b>!</p>
-                <p>Click below to verify your email and continue verification:</p>
-                <p><a href='$verify_link' 
-                      style='background:#5c67f2;color:white;padding:10px 15px;border-radius:6px;
-                             text-decoration:none;'>Verify My Account</a></p>
-                <p>If you didn’t sign up, you can ignore this email.</p>
-                <br><p style='color:gray;'>– The Rentify Team</p>
-            ";
+        $response = file_get_contents($url);
 
-            $mail->send();
-            echo json_encode(["status"=>"success","message"=>"Verification link sent to your email."]);
-            exit;
-        } catch (Exception $e) {
-            echo json_encode(["status"=>"error","message"=>"Email send failed: ".$mail->ErrorInfo]);
-            exit;
-        }
+        echo json_encode([
+            "status" => "success",
+            "message" => "OTP sent successfully to $phone",
+            "response" => $response
+        ]);
+        exit;
+
     } else {
         echo json_encode(["status"=>"error","message"=>"Database insert failed"]);
         exit;
@@ -123,5 +80,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $stmt->close();
     $conn->close();
 }
-ob_end_flush(); // clear any accidental output
+
+ob_end_flush();
 ?>

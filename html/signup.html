@@ -63,19 +63,26 @@
         </form>
 
         <p class="login-link">Already have an account? <a href="../php/login.php">Log in</a></p>
-      </div>
-
-
-<div id="otpSection" style="display: none;">
+     
+     
+     <div id="otpSection" style="display: none;">
   <input type="text" id="otpInput" placeholder="Enter OTP code">
   <button type="button" onclick="verifyOTP()">Verify OTP</button>
 </div>
+<div id="otpMessage" class="otp-message" style="display:none;"></div>
+     
+     
+     
+      </div>
+
+
 
 
     </div>
   
 
   </div>
+
 </div>
 
 <script>
@@ -110,43 +117,76 @@
   }
 
   // Signup form submit
- const signupForm = document.getElementById('signupForm');
-signupForm.addEventListener('submit', async e => {
-  e.preventDefault();
+  const signupForm = document.getElementById('signupForm');
 
-  const role = document.getElementById('roleInput').value;
-  if(role !== 'tenant') return; // landlord will handle later
+  signupForm.addEventListener('submit', async e => {
+    e.preventDefault();
 
-  const formData = new FormData(signupForm);
+    const role = document.getElementById('roleInput').value;
+    if (role !== 'tenant') {
+      alert("Landlord signup will be handled later.");
+      return;
+    }
 
-  // Send signup -> generate OTP
-  const res = await fetch("../php/send_otp.php", { method: "POST", body: formData });
-  const data = await res.json();
-  alert(data.message);
+    const formData = new FormData(signupForm);
 
-  if(data.status === 'success'){
-    document.getElementById('otpSection').style.display = 'block';
-  }
-});
+    try {
+      // Send signup -> generate OTP
+      const res = await fetch("../php/send_otp.php", {
+        method: "POST",
+        body: formData
+      });
 
-async function verifyOTP(){
-  const otp = document.getElementById('otpInput').value;
-  const phone = document.getElementById('phone').value;
+      const data = await res.json();
+      alert(data.message);
 
-  const res = await fetch('../php/verify_otp.php',{
-    method:'POST',
-    headers:{'Content-Type':'application/x-www-form-urlencoded'},
-    body:`phone=${phone}&otp=${otp}`
+      if (data.status === 'success') {
+        document.getElementById('otpSection').style.display = 'block';
+      }
+    } catch (error) {
+      console.error("Error parsing response:", error);
+      alert("Something went wrong. Please try again later.");
+    }
   });
-  const data = await res.json();
-  alert(data.message);
 
-  if(data.status === 'success'){
-    window.location.href = '../php/login.php';
-  }
+async function verifyOTP() {
+    const otp = document.getElementById('otpInput').value;
+    const country = document.getElementById('countryCode').value; // e.g. +880
+    const phoneInput = document.getElementById('phone').value.replace(/\D/g,''); // remove non-digits
+    const phone = country + phoneInput;  // e.g. +8801700000000
+    const msgBox = document.getElementById('otpMessage');
+
+    if(!otp){
+        msgBox.style.display='block';
+        msgBox.textContent='Please enter OTP';
+        msgBox.className='otp-message error';
+        return;
+    }
+
+    try {
+        const res = await fetch('../php/verify_otp.php', {
+            method:'POST',
+            headers:{'Content-Type':'application/x-www-form-urlencoded'},
+            body:`phone=${encodeURIComponent(phone)}&otp=${encodeURIComponent(otp)}`
+        });
+        const data = await res.json();
+        msgBox.style.display='block';
+        msgBox.textContent=data.message;
+
+        if(data.status==='success'){
+            msgBox.className='otp-message success';
+            setTimeout(()=>{window.location.href='../php/login.php';},1500);
+        } else {
+            msgBox.className='otp-message error';
+        }
+    } catch(err){
+        msgBox.style.display='block';
+        msgBox.textContent='Something went wrong. Please try again.';
+        msgBox.className='otp-message error';
+        console.error(err);
+    }
 }
 
-  
 
 </script>
 
