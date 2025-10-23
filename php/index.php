@@ -22,6 +22,15 @@ include 'property_card.php';
     <div class="signup-button">
       <a href="../html/signup.html"><button>Sign Up</button></a>
     </div>
+    <!-- Notification Icon -->
+<div class="notification" id="notifIcon" style="position: relative; margin-right: 20px; cursor: pointer;">
+  <i class="fas fa-bell" style="font-size: 20px; color: #333;"></i>
+  <span id="notificationCount" 
+        style="position: absolute; top: -5px; right: -5px; background: red; color: white; 
+               border-radius: 50%; padding: 2px 6px; font-size: 12px; display: none;">
+  </span>
+</div>
+
 
     <nav class="mobile-menu">
       <a href="index.php">Home</a>
