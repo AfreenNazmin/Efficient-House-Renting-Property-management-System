@@ -123,10 +123,6 @@
     e.preventDefault();
 
     const role = document.getElementById('roleInput').value;
-    if (role !== 'tenant') {
-      alert("Landlord signup will be handled later.");
-      return;
-    }
 
     const formData = new FormData(signupForm);
 
@@ -147,7 +143,8 @@
       console.error("Error parsing response:", error);
       alert("Something went wrong. Please try again later.");
     }
-  });
+});
+
 
 async function verifyOTP() {
     const otp = document.getElementById('otpInput').value;
@@ -170,12 +167,22 @@ async function verifyOTP() {
             body:`phone=${encodeURIComponent(phone)}&otp=${encodeURIComponent(otp)}`
         });
         const data = await res.json();
-        msgBox.style.display='block';
-        msgBox.textContent=data.message;
 
-        if(data.status==='success'){
+        msgBox.style.display='block';
+        msgBox.textContent = data.message;
+
+        if(data.status === 'success'){
             msgBox.className='otp-message success';
-            setTimeout(()=>{window.location.href='../php/login.php';},1500);
+
+            // Tenant → redirect to login
+            if(data.role === 'tenant'){
+                setTimeout(()=>{window.location.href='../php/login.php';},1500);
+            }
+            // Landlord → show pending message, no redirect
+            else if(data.role === 'landlord'){
+                // optionally keep message visible longer or add extra instructions
+                msgBox.textContent += ' Please wait for admin approval.';
+            }
         } else {
             msgBox.className='otp-message error';
         }

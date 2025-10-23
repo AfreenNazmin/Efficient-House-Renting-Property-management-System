@@ -12,8 +12,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         exit;
     }
 
-    // Fetch user
-    $stmt = $conn->prepare("SELECT id, name, email, password, role, is_verified FROM users WHERE email=? AND role=? LIMIT 1");
+    // Fetch user (no email verification check anymore)
+    $stmt = $conn->prepare("SELECT id, name, email, password, role FROM users WHERE email=? AND role=? LIMIT 1");
     $stmt->bind_param("ss", $email, $role);
     $stmt->execute();
     $result = $stmt->get_result();
@@ -23,10 +23,12 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
         if (password_verify($password, $user['password'])) {
 
-            if ($user['is_verified'] == 0) {
-                echo "<script>alert('Please verify your email before logging in.'); window.location.href='../html/signup.html';</script>";
-                exit;
-            }
+            // ✅ Removed: email verification restriction
+            // Previously:
+            // if ($user['is_verified'] == 0) {
+            //     echo "<script>alert('Please verify your email before logging in.'); window.location.href='../html/signup.html';</script>";
+            //     exit;
+            // }
 
             // Remember Me cookie
             if (isset($_POST['remember'])) {
@@ -55,7 +57,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     $stmt->close();
     $conn->close();
-} 
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -80,7 +82,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         <p class="sub-text">Sign in to continue to <strong>Rentify</strong></p>
 
         <form id="loginForm" action="" method="POST">
-          <input type="text" name="email" placeholder="Email" value="<?php echo isset($_COOKIE['remember_email']) ? $_COOKIE['remember_email'] : ''; ?>" required>
+          <input type="text" name="email" placeholder="Email" 
+                 value="<?php echo isset($_COOKIE['remember_email']) ? $_COOKIE['remember_email'] : ''; ?>" required>
 
           <div class="password-field">
             <input type="password" name="password" id="password" placeholder="Password" required>
@@ -91,7 +94,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
           <div class="row-between">
             <label class="checkbox">
-              <input type="checkbox" name="remember" <?php echo isset($_COOKIE['remember_email']) ? 'checked' : ''; ?>>
+              <input type="checkbox" name="remember" 
+                     <?php echo isset($_COOKIE['remember_email']) ? 'checked' : ''; ?>>
               <span>Remember me</span>
             </label>
             <a href="forgot_password.php" class="forgot">Forgot password?</a>
