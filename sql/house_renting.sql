@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Oct 22, 2025 at 06:45 PM
+-- Generation Time: Oct 24, 2025 at 04:32 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -107,13 +107,6 @@ CREATE TABLE `pending_users` (
   `admin_review_status` enum('pending','approved','rejected') DEFAULT 'pending',
   `otp_expires_at` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `pending_users`
---
-
-INSERT INTO `pending_users` (`id`, `name`, `email`, `password`, `role`, `created_at`, `phone`, `phoneVerified`, `emailVerified`, `nid_number`, `nid_front`, `nid_back`, `is_landlord_verified`, `otp`, `otp_time`, `admin_review_status`, `otp_expires_at`) VALUES
-(30, 'afreen', 'mrk243719@gmail.com', '$2y$10$NOPbos0XZwxAxqEfaYUQOeJLXChGAE7hCKpx30S4cXD/bnWbYU3D.', 'tenant', '2025-10-22 16:29:31', '+8801304453089', 0, 0, NULL, NULL, NULL, 0, 922533, '2025-10-22 18:29:31', 'pending', '2025-10-22 18:34:31');
 
 -- --------------------------------------------------------
 
@@ -292,6 +285,37 @@ CREATE TABLE `roommates` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `tenants`
+--
+
+CREATE TABLE `tenants` (
+  `id` int(11) NOT NULL,
+  `full_name` varchar(100) NOT NULL,
+  `email` varchar(100) NOT NULL,
+  `phone` varchar(20) NOT NULL,
+  `location` varchar(100) DEFAULT NULL,
+  `budget` decimal(10,2) DEFAULT NULL,
+  `bio` text DEFAULT NULL,
+  `profile_pic` varchar(255) DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `gender` varchar(10) DEFAULT NULL,
+  `age` int(11) DEFAULT NULL,
+  `occupation` varchar(100) DEFAULT NULL,
+  `hobby` varchar(100) DEFAULT NULL,
+  `pet` varchar(50) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `tenants`
+--
+
+INSERT INTO `tenants` (`id`, `full_name`, `email`, `phone`, `location`, `budget`, `bio`, `profile_pic`, `created_at`, `updated_at`, `gender`, `age`, `occupation`, `hobby`, `pet`) VALUES
+(1, 'tan', '', '', 'savar,shaka', 1500.00, 'nothing', 'uploads/ChatGPT Image Oct 15, 2025, 11_03_59 PM.png', '2025-10-23 14:44:36', '2025-10-23 15:47:22', NULL, NULL, NULL, NULL, NULL);
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `users`
 --
 
@@ -302,7 +326,6 @@ CREATE TABLE `users` (
   `password` varchar(255) NOT NULL,
   `phone` varchar(15) DEFAULT NULL,
   `phoneVerified` tinyint(1) DEFAULT 0,
-  `emailVerified` tinyint(1) DEFAULT 0,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `is_verified` tinyint(1) DEFAULT 0,
   `role` varchar(20) NOT NULL,
@@ -310,16 +333,18 @@ CREATE TABLE `users` (
   `nid_front` varchar(255) DEFAULT NULL,
   `nid_back` varchar(255) DEFAULT NULL,
   `is_landlord_verified` tinyint(1) NOT NULL DEFAULT 0,
-  `status` varchar(20) DEFAULT 'pending'
+  `status` varchar(20) DEFAULT 'pending',
+  `verification_code` varchar(6) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` (`id`, `name`, `email`, `password`, `phone`, `phoneVerified`, `emailVerified`, `created_at`, `is_verified`, `role`, `nid_number`, `nid_front`, `nid_back`, `is_landlord_verified`, `status`) VALUES
-(1, 'Afreen ', 'afreen@gmail.com', '$2y$10$41p7IIaZq1CsYC/4Az1.MeTW4mKidgv2kCUSabgJcSxCO6ND/Xw6m', NULL, 0, 0, '2025-09-18 14:25:33', 1, 'tenant', NULL, NULL, NULL, 0, 'pending'),
-(3, 'Afreen ', 'afreen1@gmail.com', '$2y$10$3UXVsxxSefeYX46L9WSkU.0FXu5NIrmIMcFl6sx.K9ynJkqCo5BXe', NULL, 0, 0, '2025-09-18 14:30:43', 1, 'landlord', NULL, NULL, NULL, 0, 'pending');
+INSERT INTO `users` (`id`, `name`, `email`, `password`, `phone`, `phoneVerified`, `created_at`, `is_verified`, `role`, `nid_number`, `nid_front`, `nid_back`, `is_landlord_verified`, `status`, `verification_code`) VALUES
+(1, 'Afreen ', 'afreen@gmail.com', '$2y$10$41p7IIaZq1CsYC/4Az1.MeTW4mKidgv2kCUSabgJcSxCO6ND/Xw6m', NULL, 0, '2025-09-18 14:25:33', 1, 'tenant', NULL, NULL, NULL, 0, 'pending', NULL),
+(3, 'Afreen ', 'afreen1@gmail.com', '$2y$10$3UXVsxxSefeYX46L9WSkU.0FXu5NIrmIMcFl6sx.K9ynJkqCo5BXe', NULL, 0, '2025-09-18 14:30:43', 1, 'landlord', NULL, NULL, NULL, 0, 'pending', NULL),
+(10, 'tan', 'mrk243719@gmail.com', '1234', '0123456789', 1, '2025-10-24 02:06:16', 0, 'tenant', '', '', '', 0, '', '');
 
 --
 -- Indexes for dumped tables
@@ -403,6 +428,12 @@ ALTER TABLE `roommates`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `tenants`
+--
+ALTER TABLE `tenants`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `users`
 --
 ALTER TABLE `users`
@@ -441,7 +472,7 @@ ALTER TABLE `messages`
 -- AUTO_INCREMENT for table `pending_users`
 --
 ALTER TABLE `pending_users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=33;
 
 --
 -- AUTO_INCREMENT for table `properties`
@@ -483,7 +514,7 @@ ALTER TABLE `roommates`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- Constraints for dumped tables
