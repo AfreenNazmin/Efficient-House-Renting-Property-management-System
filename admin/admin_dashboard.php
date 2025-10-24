@@ -211,6 +211,7 @@ h2 {
         <a href="../php/featured_prooperties.php">Featured Listings</a>
         <a href="#">Reports</a>
         <a href="#">Notifications</a>
+         <a href="add_user.php">add users</a>
     </nav>
 </header>
 
@@ -224,7 +225,7 @@ h2 {
         <li><a href="#">Listings Management</a></li>
         <li><a href="#">User Management</a></li>
         <li><a href="#">Messages</a></li>
-        <li><a href="#">Payments</a></li>
+         <li><a href="pending_users.php">Pwnding Users</a></li>
         <li><a href="#">Settings</a></li>
     </ul>
 </aside>

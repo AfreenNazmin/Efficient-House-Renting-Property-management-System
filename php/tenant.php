@@ -123,7 +123,7 @@ $properties = $stmt_props->get_result();
             <li><a href="#my-rentals">My Rentals</a></li>
             <li><a href="#messages">Messages</a></li>
             <li><a href="#my-reviews">My Reviews</a></li>
-            <li><a href="#profile">Profile</a></li>
+            <li><a href="tenant_profile.php">Profile</a></li>
             <li><a href="map.php">Map</a></li>
            <li><a href="roommate_search.php">Find Roommate</button></li>
 

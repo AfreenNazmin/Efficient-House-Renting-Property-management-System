@@ -1,20 +1,25 @@
 <?php
-include 'config.php'; 
+include "config.php";
 
-if (isset($_GET['query'])) {
-    $search = $_GET['query'];
+ 
+    $search = isset($_GET['query'])?mysqli_real_escape_string($conn,$_GET['query']):'';
+    $sql = "SELECT * FROM properties 
+            WHERE property_name LIKE '%$search%' 
+            OR location LIKE '%$search%' 
+            OR property_type LIKE '%$search%'";
 
-    $stmt = $conn->prepare("SELECT * FROM properties WHERE city LIKE ? OR neighborhood LIKE ? OR address LIKE ?");
-    $like = "%$search%";
-    $stmt->bind_param("sss", $like, $like, $like);
-    $stmt->execute();
-    $result = $stmt->get_result();
+    $result = mysqli_query($conn, $sql);
 
-    while ($row = $result->fetch_assoc()) {
-        echo "<div class='property-card'>";
-        echo "<h3>".$row['title']."</h3>";
-        echo "<p>".$row['price']." - ".$row['city']."</p>";
-        echo "</div>";
-    }
-}
+    if (mysqli_num_rows($result) > 0) {
+        while ($row = mysqli_fetch_assoc($result)) {
+            echo '<div class="result">';
+            echo '<h3>'.$row['property_name'].' - '.$row['location'].'</h3>';
+            echo '<p><strong>Rent:</strong> '.$row['rent'].' | <strong>Bedrooms:</strong> '.$row['bedrooms'].' | <strong>Type:</strong> '.$row['property_type'].'</p>';
+            echo '<img src="'.$row['image'].'" alt="'.$row['property_name'].'">';
+            echo '</div>';
+        }
+    } else {
+        echo '<div class="result">No results found</div>';
+    }     
+
 ?>
